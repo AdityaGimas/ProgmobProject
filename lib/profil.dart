@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dashboard.dart'; 
 import 'login.dart';
 
 class ProfilPage extends StatelessWidget {
@@ -13,6 +14,14 @@ class ProfilPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            const SizedBox(height: 8),
+
             Row(
               children: [
                 Container(
@@ -21,10 +30,7 @@ class ProfilPage extends StatelessWidget {
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: LinearGradient(
-                      colors: [
-                        Color(0xFFF5A94D),
-                        Color(0xFFF6D5A8),
-                      ],
+                      colors: [Color(0xFFF5A94D), Color(0xFFF6D5A8)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -120,40 +126,39 @@ class ProfilPage extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             ListTile(
-              leading: Icon(Icons.article, color: Color(0xFF2F2F2F)),
-              title: Text("Syarat dan Ketentuan"),
-              onTap: () {
-              },
+              leading: const Icon(Icons.article, color: Color(0xFF2F2F2F)),
+              title: const Text("Syarat dan Ketentuan"),
+              onTap: () {},
             ),
             ListTile(
-              leading: Icon(Icons.privacy_tip, color: Color(0xFF2F2F2F)),
-              title: Text("Kebijakan Privasi"),
-              onTap: () {
-              },
+              leading: const Icon(Icons.privacy_tip, color: Color(0xFF2F2F2F)),
+              title: const Text("Kebijakan Privasi"),
+              onTap: () {},
             ),
             ListTile(
-              leading: Icon(Icons.settings, color: Color(0xFF2F2F2F)),
-              title: Text("Pengaturan"),
-              onTap: () {
-              },
+              leading: const Icon(Icons.settings, color: Color(0xFF2F2F2F)),
+              title: const Text("Pengaturan"),
+              onTap: () {},
             ),
             ListTile(
-              leading: Icon(Icons.help_outline, color: Color(0xFF2F2F2F)),
-              title: Text("Pusat Bantuan"),
-              onTap: () {
-              },
-            ),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                socialImage("images/ig.jpeg"),   
-                socialImage("images/fb.png"),
-                socialImage("images/yt.jpeg"),
-                socialImage("images/x.jpeg"),    
-              ],
+              leading: const Icon(Icons.help_outline, color: Color(0xFF2F2F2F)),
+              title: const Text("Pusat Bantuan"),
+              onTap: () {},
             ),
             const SizedBox(height: 32),
+            Row(
+              children: const [
+                SizedBox(width: 8),
+                Text(
+                  "Developer",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2F2F2F),
+                  ),
+                ),
+              ],
+            ),
             Column(
               children: [
                 developerCard("images/adit.jpg", "Adit", "UI/UX Designer", "Adit bertugas merancang antarmuka pengguna aplikasi agar menarik dan mudah digunakan."),
@@ -163,19 +168,24 @@ class ProfilPage extends StatelessWidget {
                 developerCard("images/rangga.jpg", "Rangga", "Content Writer", "Rangga mengisi konten deskripsi dan narasi tentang budaya Bali."),
               ],
             ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                socialImage("images/ig.jpeg"),
+                socialImage("images/fb.png"),
+                socialImage("images/yt.jpeg"),
+                socialImage("images/x.jpeg"),
+              ],
+            ),
             const SizedBox(height: 40),
             Center(
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.logout, color: Colors.white),
-                label: const Text(
-                  "Logout",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
+                label: const Text("Logout", style: TextStyle(color: Colors.white, fontSize: 16)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.redAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                 ),
                 onPressed: () {
@@ -193,12 +203,7 @@ class ProfilPage extends StatelessWidget {
     );
   }
 
-  static Widget developerCard(
-    String imagePath,
-    String name,
-    String role,
-    String description,
-  ) {
+  static Widget developerCard(String imagePath, String name, String role, String description) {
     IconData roleIcon;
     switch (role.toLowerCase()) {
       case "ui/ux designer":
@@ -218,15 +223,12 @@ class ProfilPage extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFFF6D5A8),
-            Color(0xFFF5A94D),
-          ],
+          colors: [Color(0xFFF6D5A8), Color(0xFFF5A94D)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 6,
@@ -270,19 +272,12 @@ class ProfilPage extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   role,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF2F2F2F),
-                  ),
+                  style: const TextStyle(fontSize: 14, color: Color(0xFF2F2F2F)),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   description,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Color(0xFF2F2F2F),
-                    height: 1.4,
-                  ),
+                  style: const TextStyle(fontSize: 13, color: Color(0xFF2F2F2F), height: 1.4),
                 ),
               ],
             ),
@@ -292,12 +287,11 @@ class ProfilPage extends StatelessWidget {
     );
   }
 
-    static Widget socialImage(String assetPath) {
+  static Widget socialImage(String assetPath) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: InkWell(
-        onTap: () {
-        },
+        onTap: () {},
         child: Image.asset(
           assetPath,
           width: 32,
@@ -341,4 +335,3 @@ class ProfilPage extends StatelessWidget {
     );
   }
 }
-
