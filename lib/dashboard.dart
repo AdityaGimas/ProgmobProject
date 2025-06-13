@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'profil.dart';
 import '../pages/detail_tanahlot.dart';
 import '../pages/detail_pantaikuta.dart';
@@ -9,6 +10,7 @@ import '../pages/detail_gwk.dart';
 import '../pages/detail_tegalalang.dart';
 import '../models/detailwisatamodel.dart';
 import 'package:progmob_kelompok/pages/rekomendasi_page.dart';
+import 'dart:io';
 
 void main() {
   runApp(const MyApp());
@@ -130,42 +132,20 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   Row(
-                                    children: [
-                                      PopupMenuButton<String>(
-                                        icon: const Icon(Icons.grid_view, color: Color(0xFF2F2F2F)),
-                                        onSelected: (value) {
-                                          if (value == "Rekomendasi") {
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.grid_view, color: Color(0xFF2F2F2F)),
+                                          onPressed: () {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) => const RekomendasiPage(),
                                               ),
                                             );
-                                          } else if (value == "Bookmarked") {
-                                            // Contoh: arahkan ke halaman Bookmarked jika sudah ada
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => const RekomendasiPage()));
-                                          }
-                                        },
-                                        itemBuilder: (BuildContext context) => [
-                                          const PopupMenuItem(
-                                            value: "Rekomendasi",
-                                            child: Text("Rekomendasi"),
-                                          ),
-                                          const PopupMenuItem(
-                                            value: "Bookmarked",
-                                            child: Text("Bookmarked"),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(width: 16),
-                                      IconButton(
-                                        icon: const Icon(Icons.search, color: Color(0xFF2F2F2F)),
-                                        onPressed: () {
-                                          _showSearchModal(context);
-                                        },
-                                      ),
-                                    ],
-                                  ),
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                 ],
                               ),
                               const SizedBox(height: 101),
@@ -302,7 +282,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
                 DestinationCard(
-                  title: "Ulun Danu Beratan",
+                  title: "Ulundanu Beratan",
                   imagePath: "images/ulundanu.jpg",
                   onTap: () {
                     final wisata = Wisata(
@@ -345,19 +325,47 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFFF9E8D9),
-        currentIndex: 0,
-        selectedItemColor: const Color(0xFFF5A94D),
-        unselectedItemColor: const Color(0xFF6D6D6D),
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.location_on), label: ""),
-        ],
-      ),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: const Color(0xFFF9E8D9),
+          currentIndex: 0,
+          selectedItemColor: const Color(0xFFF5A94D),
+          unselectedItemColor: const Color(0xFF6D6D6D),
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          onTap: (index) async {
+            if (index == 1) {
+              final shouldExit = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Keluar Aplikasi"),
+                  content: const Text("Apakah kamu yakin ingin keluar dari aplikasi?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text("Batal"),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text("Keluar"),
+                    ),
+                  ],
+                ),
+              );
+
+              if (shouldExit == true) {
+                if (Platform.isAndroid || Platform.isIOS) {
+                  SystemNavigator.pop(); // Android/iOS
+                } else {
+                  exit(0); // Windows, macOS, Linux
+                }
+              }
+            }
+          },
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
+            BottomNavigationBarItem(icon: Icon(Icons.power_settings_new), label: ""),
+          ],
+        ),
     );
   }
 
@@ -511,14 +519,15 @@ class DestinationCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const Positioned(
-                bottom: 16,
-                right: 16,
-                child: CircleAvatar(
-                  backgroundColor: Color(0xFFF5A94D),
-                  child: Icon(Icons.arrow_forward, color: Colors.white),
-                ),
-              )
+              // >>> HAPUS BAGIAN INI UNTUK MENGHILANGKAN TOMBOL PANAH <<<
+    // const Positioned(
+    //   bottom: 16,
+    //   right: 16,
+    //   child: CircleAvatar(
+    //     backgroundColor: Color(0xFFF5A94D),
+    //     child: Icon(Icons.arrow_forward, color: Colors.white),
+    //   ),
+    // )
             ],
           ),
         ),
