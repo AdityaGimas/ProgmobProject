@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dashboard.dart'; 
 import 'login.dart';
 
 class ProfilPage extends StatelessWidget {
@@ -9,19 +8,26 @@ class ProfilPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: Container(
+          margin: const EdgeInsets.all(8),
+          child: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Color.fromARGB(255, 255, 255, 255),
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
+        backgroundColor: Color(0xFFF5A94D),
+        elevation: 0,
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            const SizedBox(height: 8),
-
             Row(
               children: [
                 Container(
@@ -86,7 +92,11 @@ class ProfilPage extends StatelessWidget {
                 Expanded(
                   child: const Text(
                     "Aplikasi ini membantu wisatawan menjelajahi destinasi terbaik di Bali dengan informasi lengkap dan tampilan yang ramah pengguna.",
-                    style: TextStyle(fontSize: 12, color: Color(0xFF2F2F2F), height: 1.5),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF2F2F2F),
+                      height: 1.5,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -161,11 +171,36 @@ class ProfilPage extends StatelessWidget {
             ),
             Column(
               children: [
-                developerCard("images/adit.jpg", "Adit", "UI/UX Designer", "Adit bertugas merancang antarmuka pengguna aplikasi agar menarik dan mudah digunakan."),
-                developerCard("images/rehan.jpg", "Rehan", "Flutter Developer", "Rehan fokus pada implementasi fitur menggunakan Flutter dengan performa optimal."),
-                developerCard("images/prad.jpg", "Prad", "Content Writer", "Prad menulis konten informatif tentang destinasi wisata Bali."),
-                developerCard("images/carlos.jpg", "Carlos", "Flutter Developer", "Carlos membantu membangun antarmuka aplikasi dan logika halaman."),
-                developerCard("images/rangga.jpg", "Rangga", "Content Writer", "Rangga mengisi konten deskripsi dan narasi tentang budaya Bali."),
+                developerCard(
+                  "images/adit.jpg",
+                  "Adit",
+                  "UI/UX Designer",
+                  "Adit bertugas merancang antarmuka pengguna aplikasi agar menarik dan mudah digunakan.",
+                ),
+                developerCard(
+                  "images/rehan.jpg",
+                  "Rehan",
+                  "Flutter Developer",
+                  "Rehan fokus pada implementasi fitur menggunakan Flutter dengan performa optimal.",
+                ),
+                developerCard(
+                  "images/prad.jpg",
+                  "Prad",
+                  "Content Writer",
+                  "Prad menulis konten informatif tentang destinasi wisata Bali.",
+                ),
+                developerCard(
+                  "images/carlos.jpg",
+                  "Carlos",
+                  "Flutter Developer",
+                  "Carlos membantu membangun antarmuka aplikasi dan logika halaman.",
+                ),
+                developerCard(
+                  "images/rangga.jpg",
+                  "Rangga",
+                  "Content Writer",
+                  "Rangga mengisi konten deskripsi dan narasi tentang budaya Bali.",
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -182,11 +217,19 @@ class ProfilPage extends StatelessWidget {
             Center(
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.logout, color: Colors.white),
-                label: const Text("Logout", style: TextStyle(color: Colors.white, fontSize: 16)),
+                label: const Text(
+                  "Logout",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.redAccent,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 14,
+                  ),
                 ),
                 onPressed: () {
                   Navigator.pushReplacement(
@@ -203,7 +246,12 @@ class ProfilPage extends StatelessWidget {
     );
   }
 
-  static Widget developerCard(String imagePath, String name, String role, String description) {
+  static Widget developerCard(
+    String imagePath,
+    String name,
+    String role,
+    String description,
+  ) {
     IconData roleIcon;
     switch (role.toLowerCase()) {
       case "ui/ux designer":
@@ -229,11 +277,7 @@ class ProfilPage extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            offset: Offset(0, 4),
-          ),
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 4)),
         ],
       ),
       padding: const EdgeInsets.all(12),
@@ -272,12 +316,19 @@ class ProfilPage extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   role,
-                  style: const TextStyle(fontSize: 14, color: Color(0xFF2F2F2F)),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF2F2F2F),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   description,
-                  style: const TextStyle(fontSize: 13, color: Color(0xFF2F2F2F), height: 1.4),
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Color(0xFF2F2F2F),
+                    height: 1.4,
+                  ),
                 ),
               ],
             ),
@@ -292,11 +343,7 @@ class ProfilPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: InkWell(
         onTap: () {},
-        child: Image.asset(
-          assetPath,
-          width: 32,
-          height: 32,
-        ),
+        child: Image.asset(assetPath, width: 32, height: 32),
       ),
     );
   }
@@ -307,10 +354,7 @@ class ProfilPage extends StatelessWidget {
       margin: const EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        image: DecorationImage(
-          image: AssetImage(path),
-          fit: BoxFit.cover,
-        ),
+        image: DecorationImage(image: AssetImage(path), fit: BoxFit.cover),
       ),
       alignment: Alignment.bottomCenter,
       child: Container(
