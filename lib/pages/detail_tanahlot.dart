@@ -27,8 +27,10 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
 
   Future<void> _launchMaps() async {
     if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
-      await launchUrl(Uri.parse(googleMapsUrl),
-          mode: LaunchMode.externalApplication);
+      await launchUrl(
+        Uri.parse(googleMapsUrl),
+        mode: LaunchMode.externalApplication,
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Tidak dapat membuka Google Maps')),
@@ -72,7 +74,8 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                   children: [
                     ClipRRect(
                       borderRadius: const BorderRadius.vertical(
-                          bottom: Radius.circular(32)),
+                        bottom: Radius.circular(32),
+                      ),
                       child: PageView.builder(
                         itemCount: fotoTanahLot.length,
                         onPageChanged: (index) {
@@ -113,8 +116,10 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                       child: CircleAvatar(
                         backgroundColor: Colors.white.withOpacity(0.85),
                         child: IconButton(
-                          icon: const Icon(Icons.arrow_back,
-                              color: Color(0xFF2F2F2F)),
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Color(0xFF2F2F2F),
+                          ),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ),
@@ -130,18 +135,20 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                             _isBookmarked
                                 ? Icons.bookmark
                                 : Icons.bookmark_border,
-                            color: _isBookmarked
-                                ? Color(0xFFF5A94D)
-                                : Color(0xFF2F2F2F),
+                            color:
+                                _isBookmarked
+                                    ? Color(0xFFF5A94D)
+                                    : Color(0xFF2F2F2F),
                           ),
                           onPressed: () {
                             setState(() {
                               _isBookmarked = !_isBookmarked;
                             });
                           },
-                          tooltip: _isBookmarked
-                              ? 'Hapus Bookmark'
-                              : 'Tambah Bookmark',
+                          tooltip:
+                              _isBookmarked
+                                  ? 'Hapus Bookmark'
+                                  : 'Tambah Bookmark',
                         ),
                       ),
                     ),
@@ -159,9 +166,10 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                             width: _currentPage == index ? 22 : 8,
                             height: 8,
                             decoration: BoxDecoration(
-                              color: _currentPage == index
-                                  ? const Color(0xFFF5A94D)
-                                  : Colors.white.withOpacity(0.8),
+                              color:
+                                  _currentPage == index
+                                      ? const Color(0xFFF5A94D)
+                                      : Colors.white.withOpacity(0.8),
                               borderRadius: BorderRadius.circular(8),
                             ),
                           );
@@ -173,8 +181,10 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
               ),
               // Konten detail di bawah (ikut scroll)
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 20,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -188,7 +198,9 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                       margin: const EdgeInsets.only(bottom: 20),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 18),
+                          horizontal: 20,
+                          vertical: 18,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -203,22 +215,32 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                             const SizedBox(height: 8),
                             Row(
                               children: [
-                                const Icon(Icons.place,
-                                    color: Color(0xFFF5A94D), size: 20),
+                                const Icon(
+                                  Icons.place,
+                                  color: Color(0xFFF5A94D),
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   widget.wisata.lokasi,
                                   style: const TextStyle(
-                                      fontSize: 16, color: Color(0xFF6D6D6D)),
+                                    fontSize: 16,
+                                    color: Color(0xFF6D6D6D),
+                                  ),
                                 ),
                                 const Spacer(),
-                                const Icon(Icons.access_time,
-                                    color: Color(0xFFF5A94D), size: 20),
+                                const Icon(
+                                  Icons.access_time,
+                                  color: Color(0xFFF5A94D),
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 4),
                                 const Text(
                                   "07:00 - 19:00",
                                   style: TextStyle(
-                                      fontSize: 16, color: Color(0xFF6D6D6D)),
+                                    fontSize: 16,
+                                    color: Color(0xFF6D6D6D),
+                                  ),
                                 ),
                               ],
                             ),
@@ -266,7 +288,7 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                             ),
                             icon: const Icon(Icons.map, color: Colors.white),
                             label: const Text(
-                              "Rute Menuju Tempat",
+                              "Rute",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
@@ -289,8 +311,10 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                               elevation: 2,
                               shadowColor: Colors.orangeAccent.withOpacity(0.2),
                             ),
-                            icon: const Icon(Icons.event,
-                                color: Color(0xFFF5A94D)),
+                            icon: const Icon(
+                              Icons.event,
+                              color: Color(0xFFF5A94D),
+                            ),
                             label: const Text(
                               "Lihat Event",
                               style: TextStyle(
@@ -303,9 +327,13 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => EventListPage(
-                                    namaWisata: widget.wisata.nama, // kirim nama tempat wisata
-                                  ),
+                                  builder:
+                                      (context) => EventListPage(
+                                        namaWisata:
+                                            widget
+                                                .wisata
+                                                .nama, // kirim nama tempat wisata
+                                      ),
                                 ),
                               );
                             },
