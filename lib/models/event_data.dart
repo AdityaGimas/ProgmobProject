@@ -44,21 +44,21 @@ final List<Event> events = [
     title: 'Festival Layang-Layang Bali',
     description: 'Event tahunan dengan berbagai jenis layangan tradisional.',
     date: 'Juli - Agustus setiap tahun',
-    imageUrls: ['images/kite1.jpeg', 'images/kite2.jpg'],
+    imageUrls: ['images/kite1.jpeg', 'images/kite2.JPG'],
   ),
   Event(
     location: 'Pantai Kuta',
     title: 'Beach Clean-up Day',
     description: 'Kegiatan gotong-royong membersihkan pantai bersama komunitas.',
     date: 'Setiap minggu pertama setiap bulan',
-    imageUrls: ['images/cleanup1.jpg', 'images/cleanup2.jpg'],
+    imageUrls: ['images/cleanup1.jpg', 'images/cleanup2.JPG'],
   ),
   Event(
     location: 'Pantai Kuta',
     title: 'Kuta Carnival',
     description: 'Konser kecil musik lokal di tepi pantai saat sunset.',
     date: 'Sabtu sore',
-    imageUrls: ['images/carnival.jpg', 'images/carnival1.jpg'],
+    imageUrls: ['images/carnival.jpg', 'images/carnival1.JPG'],
   ),
 
   // Ubud, Gianyar
@@ -67,21 +67,21 @@ final List<Event> events = [
     title: 'Ubud Writers & Readers Festival',
     description: 'Festival sastra internasional tahunan di pusat budaya Ubud.',
     date: 'Oktober setiap tahun',
-    imageUrls: ['images/uwrf1.jpg', 'images/uwrf2.jpg'],
+    imageUrls: ['images/uwrf1.jpeg', 'images/uwrf2.jpeg'],
   ),
   Event(
     location: 'Ubud',
     title: 'Festival Topeng & Wayang',
     description: 'Pertunjukan seni budaya lokal seperti tari topeng dan wayang.',
     date: 'Juni setiap tahun',
-    imageUrls: ['images/wayang1.jpg', 'images/wayang2.jpg'],
+    imageUrls: ['images/wayang1.jpeg', 'images/wayang2.jpeg'],
   ),
   Event(
     location: 'Ubud',
     title: 'Pasar Seni Rakyat',
     description: 'Pameran makanan lokal, kerajinan tangan dan kesenian.',
     date: 'Setiap hari Minggu',
-    imageUrls: ['images/pasar1.jpg', 'images/pasar2.jpg'],
+    imageUrls: ['images/pasar1.jpeg', 'images/pasar2.jpeg'],
   ),
 
   // Pura Ulun Danu Batur
@@ -97,14 +97,14 @@ final List<Event> events = [
     title: 'Prosesi Melasti',
     description: 'Upacara pembersihan simbolik menuju Danau Batur menjelang Nyepi.',
     date: 'Menjelang Hari Raya Nyepi',
-    imageUrls: ['images/melasti1.jpg', 'images/melasti2.jpg'],
+    imageUrls: ['images/melasti1.jpeg', 'images/melasti2.jpeg'],
   ),
   Event(
     location: 'Ulun Danu Beratan',
     title: 'Festival Danau Batur',
     description: 'Festival budaya dan keindahan alam di tepi Danau Batur.',
     date: 'Mei - Juni',
-    imageUrls: ['images/festivaldanau1.jpg', 'images/festivaldanau2.jpg'],
+    imageUrls: ['images/festivaldanau1.jpeg', 'images/festivaldanau2.jpeg'],
   ),
 
   // Kelingking Beach
@@ -113,21 +113,21 @@ final List<Event> events = [
     title: 'Konservasi Penyu & Laut',
     description: 'Kegiatan edukasi dan pelepasan tukik untuk wisatawan.',
     date: 'Tiap musim bertelur (Mei - Agustus)',
-    imageUrls: ['images/penyu1.jpg', 'images/penyu2.jpg'],
+    imageUrls: ['images/penyu1.jpeg', 'images/penyu2.jpeg'],
   ),
   Event(
     location: 'Pantai Kelingking',
     title: 'Upacara Segara',
     description: 'Upacara adat Bali untuk penghormatan kepada laut.',
     date: 'Bulan Purnama',
-    imageUrls: ['images/segara1.jpg', 'images/segara2.jpg'],
+    imageUrls: ['images/segara1.jpeg', 'images/segara2.jpeg'],
   ),
   Event(
     location: 'Pantai Kelingking',
     title: 'Snorkeling Bersih Laut',
     description: 'Kegiatan snorkel sambil membersihkan sampah laut.',
     date: 'Setiap minggu kedua',
-    imageUrls: ['images/snorkel1.jpg', 'images/snorkel2.jpg'],
+    imageUrls: ['images/snorkel1.jpeg', 'images/snorkel2.jpeg'],
   ),
 
   // GWK
@@ -136,21 +136,21 @@ final List<Event> events = [
     title: 'Tari Barong dan Keris',
     description: 'Pertunjukan harian di amphitheater GWK Cultural Park.',
     date: 'Setiap hari pukul 17.00 WITA',
-    imageUrls: ['images/barong1.jpg', 'images/barong2.jpg'],
+    imageUrls: ['images/barong1.jpeg', 'images/barong2.jpeg'],
   ),
   Event(
     location: 'Garuda Wisnu Kencana',
     title: 'Festival Budaya Nusantara',
     description: 'Pagelaran budaya dari berbagai daerah di Indonesia.',
     date: 'Agustus setiap tahun',
-    imageUrls: ['images/nusantara1.jpg', 'images/nusantara2.jpg'],
+    imageUrls: ['images/nusantara1.jpeg', 'images/nusantara2.jpeg'],
   ),
   Event(
     location: 'Garuda Wisnu Kencana',
     title: 'Pameran Patung dan Relief',
     description: 'Pameran seni patung dari berbagai seniman lokal.',
     date: 'April dan November',
-    imageUrls: ['images/relief1.jpg', 'images/relief2.jpg'],
+    imageUrls: ['images/relief1.jpeg', 'images/relief2.jpeg'],
   ),
 
   // Tegalalang
@@ -159,14 +159,14 @@ final List<Event> events = [
     title: 'Festival Panen Raya',
     description: 'Kegiatan panen raya dan atraksi budaya pertanian tradisional.',
     date: 'Maret dan Oktober',
-    imageUrls: ['images/panen1.jpg', 'images/panen2.jpg'],
+    imageUrls: ['images/panen1.jpg', 'images/panen2.jpeg'],
   ),
   Event(
     location: 'Sawah Terasering Tegalalang',
     title: 'Workshop Subak',
     description: 'Edukasi sistem irigasi khas Bali dan peran petani lokal.',
     date: 'Setiap akhir pekan',
-    imageUrls: ['images/subak1.jpg', 'images/subak2.jpg'],
+    imageUrls: ['images/subak1.jpg', 'images/subak2.jpeg'],
   ),
   Event(
     location: 'Sawah Terasering Tegalalang',
