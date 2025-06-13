@@ -1,53 +1,69 @@
 import 'package:flutter/material.dart';
+import '../controllers/login_controller.dart';
 import 'register.dart';
 import 'dashboard.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _controller = LoginController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-          children: [
-              // Gambar di atas form
-              Image.asset(
-                'images/login.jpg',
-                height: 240,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-
-          Positioned.fill(
-            child: Container(
-              color: Colors.black.withOpacity(0.4),
+      body: Stack(children: [
+        Image.asset(
+          'images/login.jpg',
+          height: 240,
+          width: double.infinity,
+          fit: BoxFit.cover,
+        ),
+        Positioned.fill(
+          child: Container(color: Colors.black.withOpacity(0.4)),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
             ),
-          ),
-
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-              ),
-              child: SingleChildScrollView(
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
                       "Welcome Back",
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF2F2F2F),
-                      ),
+                      style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Color(0xFF2F2F2F)),
                     ),
                     const SizedBox(height: 24),
-                    _inputField("Email Address"),
+                    TextFormField(
+                      controller: _controller.emailController,
+                      validator: _controller.validateEmail,
+                      decoration: _inputDecoration("Email Address"),
+                    ),
                     const SizedBox(height: 16),
-                    _inputField("Password", isPassword: true),
+                    TextFormField(
+                      controller: _controller.passwordController,
+                      validator: _controller.validatePassword,
+                      obscureText: true,
+                      decoration: _inputDecoration("Password"),
+                    ),
                     const SizedBox(height: 8),
                     const Align(
                       alignment: Alignment.centerRight,
@@ -61,17 +77,17 @@ class LoginPage extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (_) => const HomePage()),
-                          );
+                          if (_formKey.currentState!.validate()) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (_) => const HomePage()),
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFF5A94D),
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                         ),
                         child: const Text("Sign In", style: TextStyle(color: Colors.white)),
                       ),
@@ -108,10 +124,7 @@ class LoginPage extends StatelessWidget {
                     Center(
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const RegisterPage()),
-                          );
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterPage()));
                         },
                         child: const Text.rich(
                           TextSpan(
@@ -131,24 +144,21 @@ class LoginPage extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ]),
     );
   }
 
-  Widget _inputField(String label, {bool isPassword = false}) {
-    return TextField(
-      obscureText: isPassword,
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(color: Color(0xFF6D6D6D)),
-        filled: true,
-        fillColor: const Color(0xFFF9E8D9),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFE2E2E2)),
-        ),
+  InputDecoration _inputDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: const TextStyle(color: Color(0xFF6D6D6D)),
+      filled: true,
+      fillColor: const Color(0xFFF9E8D9),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFFE2E2E2)),
       ),
     );
   }
