@@ -11,7 +11,7 @@ class BaliDestinasiApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Bali Destinasi',
+      title: 'Bali Destinasi mantap',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Arial',
