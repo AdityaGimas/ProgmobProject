@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'profil.dart';
-import '../pages/detail_tanahlot.dart';
-import '../pages/detail_pantaikuta.dart';
-import '../pages/detail_ubud.dart';
-import '../pages/detail_ulundanuberatan.dart';
-import '../pages/detail_kelingking.dart';
-import '../pages/detail_gwk.dart';
-import '../pages/detail_tegalalang.dart';
+import 'detail_tanahlot.dart';
+import 'detail_pantaikuta.dart';
+import 'detail_ubud.dart';
+import 'detail_ulundanuberatan.dart';
+import 'detail_kelingking.dart';
+import 'detail_gwk.dart';
+import 'detail_tegalalang.dart';
 import '../models/detailwisatamodel.dart';
-import 'package:progmob_kelompok/pages/rekomendasi_page.dart';
+import 'rekomendasi_page.dart';
 import 'dart:io';
 
 void main() {
@@ -406,51 +406,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _showSearchModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        String query = "";
-        List<String> filteredList = allDestinations;
-        return StatefulBuilder(builder: (context, setState) {
-          return Container(
-            padding: const EdgeInsets.all(16),
-            height: 400,
-            child: Column(
-              children: [
-                TextField(
-                  decoration: const InputDecoration(
-                    hintText: 'Cari destinasi...',
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      query = value;
-                      filteredList = allDestinations
-                          .where((element) => element.toLowerCase().contains(query.toLowerCase()))
-                          .toList();
-                    });
-                  },
-                ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: filteredList.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(filteredList[index]),
-                        leading: const Icon(Icons.location_on),
-                      );
-                    },
-                  ),
-                )
-              ],
-            ),
-          );
-        });
-      },
-    );
-  }
 }
 
 class DestinationCard extends StatelessWidget {

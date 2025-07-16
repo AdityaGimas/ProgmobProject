@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:progmob_kelompok/pages/detail_rekomendasi.dart';
+import 'detail_rekomendasi.dart';
 import 'package:progmob_kelompok/models/mode_rekomendasi.dart';
 
 class RekomendasiPage extends StatefulWidget {

@@ -2,71 +2,75 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/detailwisatamodel.dart';
-import 'package:progmob_kelompok/pages/event_list_page.dart';
+import 'event_list_page.dart';
 
-class DetailTanahLotPage extends StatefulWidget {
+class DetailTegalalangPage extends StatefulWidget {
   final Wisata wisata;
-  const DetailTanahLotPage({Key? key, required this.wisata}) : super(key: key);
+  const DetailTegalalangPage({Key? key, required this.wisata})
+      : super(key: key);
 
   @override
-  State<DetailTanahLotPage> createState() => _DetailTanahLotPageState();
+  State<DetailTegalalangPage> createState() => _DetailTegalalangPageState();
 }
 
-class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
+class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
   int _currentPage = 0;
-  bool _isBookmarked = false; // Status bookmark
-
+  bool _isBookmarked = false;
   final String googleMapsUrl =
-      'https://www.google.com/maps/place/Tanah+Lot/@-8.6212118,115.0842229,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd237824f71deab:0xcaabe270f7e34d69!8m2!3d-8.621213!4d115.086807!16zL20vMGJ2NGRo?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
-
-  final List<String> fotoTanahLot = [
-    'images/tanahlot.jpg',
-    'images/tanahlot2.jpg',
-    'images/tanahlot3.jpg',
+      'https://www.google.com/maps/place/Tegallalang+Rice+Terrace/@-8.4317112,115.2767227,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd2220b23f900e3:0x8d1a8969386c04ed!8m2!3d-8.4317112!4d115.279303!16s%2Fm%2F0kcf42x?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
+  final List<String> foto = [
+    'images/tegalalang.jpg',
+    'images/tegalalang2.jpg',
+    'images/tegalalang3.jpg',
   ];
 
   Future<void> _launchMaps() async {
     if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
-      await launchUrl(
-        Uri.parse(googleMapsUrl),
-        mode: LaunchMode.externalApplication,
-      );
+      await launchUrl(Uri.parse(googleMapsUrl),
+          mode: LaunchMode.externalApplication);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Tidak dapat membuka Google Maps')),
+        const SnackBar(content: Text('Gagal membuka Google Maps')),
       );
     }
   }
 
   void _shareInfo() {
     Share.share(
-      'Yuk kunjungi Pura Tanah Lot di Tabanan, Bali!\n'
-      'Jam buka: 07:00 - 19:00\n'
-      'Pura Tanah Lot berdiri di atas batu karang di tepi laut, menjadi ikon budaya dan spiritual Bali. Tempat ini sangat populer untuk menikmati pemandangan matahari terbenam yang spektakuler. Pura ini juga menjadi salah satu situs warisan budaya UNESCO.\n'
+      'Yuk kunjungi Sawah Terasering Tegalalang di Gianyar!\n'
+      'Jam buka: 07:00 - 18:00\n'
+      'Sawah berundak dengan sistem subak tradisional. Spot foto dengan ayunan dan warung kopi di pinggir sawah.\n'
       'Lokasi: $googleMapsUrl',
-      subject: 'Rekomendasi Wisata Bali - Tanah Lot',
+      subject: 'Rekomendasi Wisata Bali - Tegalalang',
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: const Color(0xFFF9E8D9),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _shareInfo,
-        backgroundColor: const Color(0xFFF5A94D),
-        child: const Icon(Icons.share, color: Colors.white, size: 20),
-        elevation: 6,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        tooltip: 'Bagikan',
+      floatingActionButton: SizedBox(
+        width: 44,
+        height: 44,
+        child: FloatingActionButton(
+          onPressed: _shareInfo,
+          backgroundColor: const Color(0xFFF5A94D),
+          child: const Icon(
+            Icons.share,
+            color: Colors.white,
+            size: 20,
+          ),
+          elevation: 6,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Gambar carousel (ikut scroll)
+              // Carousel gambar (ikut scroll)
               SizedBox(
                 height: 300,
                 width: double.infinity,
@@ -74,10 +78,9 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                   children: [
                     ClipRRect(
                       borderRadius: const BorderRadius.vertical(
-                        bottom: Radius.circular(32),
-                      ),
+                          bottom: Radius.circular(32)),
                       child: PageView.builder(
-                        itemCount: fotoTanahLot.length,
+                        itemCount: foto.length,
                         onPageChanged: (index) {
                           setState(() {
                             _currentPage = index;
@@ -88,7 +91,7 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                             fit: StackFit.expand,
                             children: [
                               Image.asset(
-                                fotoTanahLot[index],
+                                foto[index],
                                 fit: BoxFit.cover,
                               ),
                               Container(
@@ -109,22 +112,19 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                         },
                       ),
                     ),
-                    // Tombol back
+                    // Tombol back dan bookmark
                     Positioned(
                       top: 24,
                       left: 20,
                       child: CircleAvatar(
                         backgroundColor: Colors.white.withOpacity(0.85),
                         child: IconButton(
-                          icon: const Icon(
-                            Icons.arrow_back,
-                            color: Color(0xFF2F2F2F),
-                          ),
+                          icon: const Icon(Icons.arrow_back,
+                              color: Color(0xFF2F2F2F)),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ),
                     ),
-                    // Tombol bookmark AKTIF
                     Positioned(
                       top: 24,
                       right: 20,
@@ -135,20 +135,18 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                             _isBookmarked
                                 ? Icons.bookmark
                                 : Icons.bookmark_border,
-                            color:
-                                _isBookmarked
-                                    ? Color(0xFFF5A94D)
-                                    : Color(0xFF2F2F2F),
+                            color: _isBookmarked
+                                ? Color(0xFFF5A94D)
+                                : Color(0xFF2F2F2F),
                           ),
                           onPressed: () {
                             setState(() {
                               _isBookmarked = !_isBookmarked;
                             });
                           },
-                          tooltip:
-                              _isBookmarked
-                                  ? 'Hapus Bookmark'
-                                  : 'Tambah Bookmark',
+                          tooltip: _isBookmarked
+                              ? 'Hapus Bookmark'
+                              : 'Tambah Bookmark',
                         ),
                       ),
                     ),
@@ -159,17 +157,16 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                       right: 0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(fotoTanahLot.length, (index) {
+                        children: List.generate(foto.length, (index) {
                           return AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             margin: const EdgeInsets.symmetric(horizontal: 4),
                             width: _currentPage == index ? 22 : 8,
                             height: 8,
                             decoration: BoxDecoration(
-                              color:
-                                  _currentPage == index
-                                      ? const Color(0xFFF5A94D)
-                                      : Colors.white.withOpacity(0.8),
+                              color: _currentPage == index
+                                  ? const Color(0xFFF5A94D)
+                                  : Colors.white.withOpacity(0.8),
                               borderRadius: BorderRadius.circular(8),
                             ),
                           );
@@ -179,16 +176,13 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                   ],
                 ),
               ),
-              // Konten detail di bawah (ikut scroll)
+              // Konten detail (ikut scroll)
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 20,
-                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Judul dan lokasi dalam card
                     Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
@@ -198,28 +192,23 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                       margin: const EdgeInsets.only(bottom: 20),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 18,
-                        ),
+                            horizontal: 20, vertical: 18),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               widget.wisata.nama,
-                              style: theme.textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF2F2F2F),
+                              style: const TextStyle(
                                 fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2F2F2F),
                               ),
                             ),
                             const SizedBox(height: 8),
                             Row(
                               children: [
-                                const Icon(
-                                  Icons.place,
-                                  color: Color(0xFFF5A94D),
-                                  size: 20,
-                                ),
+                                const Icon(Icons.place,
+                                    color: Color(0xFFF5A94D), size: 20),
                                 const SizedBox(width: 4),
                                 Text(
                                   widget.wisata.lokasi,
@@ -229,14 +218,11 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                                   ),
                                 ),
                                 const Spacer(),
-                                const Icon(
-                                  Icons.access_time,
-                                  color: Color(0xFFF5A94D),
-                                  size: 20,
-                                ),
+                                const Icon(Icons.access_time,
+                                    color: Color(0xFFF5A94D), size: 20),
                                 const SizedBox(width: 4),
                                 const Text(
-                                  "07:00 - 19:00",
+                                  "07:00 - 18:00",
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Color(0xFF6D6D6D),
@@ -248,7 +234,6 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                         ),
                       ),
                     ),
-                    // Deskripsi
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -263,7 +248,7 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                       ),
                       padding: const EdgeInsets.all(20),
                       child: const Text(
-                        "Pura Tanah Lot berdiri di atas batu karang di tepi laut, menjadi ikon budaya dan spiritual Bali. Tempat ini sangat populer untuk menikmati pemandangan matahari terbenam yang spektakuler. Pura ini juga menjadi salah satu situs warisan budaya UNESCO.",
+                        "Sawah terasering Tegalalang menawarkan pemandangan hijau bertingkat. Cocok untuk foto dengan ayunan dan menikmati kopi di warung lokal.",
                         style: TextStyle(
                           fontSize: 16,
                           color: Color(0xFF2F2F2F),
@@ -272,7 +257,6 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                       ),
                     ),
                     const SizedBox(height: 32),
-                    // Tombol aksi
                     Row(
                       children: [
                         Expanded(
@@ -311,10 +295,8 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                               elevation: 2,
                               shadowColor: Colors.orangeAccent.withOpacity(0.2),
                             ),
-                            icon: const Icon(
-                              Icons.event,
-                              color: Color(0xFFF5A94D),
-                            ),
+                            icon: const Icon(Icons.event,
+                                color: Color(0xFFF5A94D)),
                             label: const Text(
                               "Lihat Event",
                               style: TextStyle(
@@ -327,13 +309,9 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder:
-                                      (context) => EventListPage(
-                                        namaWisata:
-                                            widget
-                                                .wisata
-                                                .nama, // kirim nama tempat wisata
-                                      ),
+                                  builder: (context) => EventListPage(
+                                    namaWisata: widget.wisata.nama, // kirim nama tempat wisata
+                                  ),
                                 ),
                               );
                             },
@@ -342,24 +320,23 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                       ],
                     ),
                     const SizedBox(height: 24),
-                    // Section info tambahan (opsional aesthetic)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _InfoIcon(
-                          icon: Icons.wb_sunny_rounded,
-                          label: "Sunset",
-                          color: Colors.orangeAccent,
+                          icon: Icons.forest_rounded,
+                          label: "Sawah",
+                          color: Colors.green,
                         ),
                         _InfoIcon(
                           icon: Icons.camera_alt_rounded,
-                          label: "Spot Foto",
-                          color: Colors.purpleAccent,
+                          label: "Foto",
+                          color: Colors.purple,
                         ),
                         _InfoIcon(
-                          icon: Icons.spa_rounded,
-                          label: "Budaya",
-                          color: Colors.green,
+                          icon: Icons.local_cafe_rounded,
+                          label: "Kopi",
+                          color: Colors.brown,
                         ),
                       ],
                     ),

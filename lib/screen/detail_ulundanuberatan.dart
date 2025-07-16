@@ -2,26 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/detailwisatamodel.dart';
-import 'package:progmob_kelompok/pages/event_list_page.dart';
+import 'event_list_page.dart';
 
-class DetailTegalalangPage extends StatefulWidget {
+class DetailUlunDanuBeratanPage extends StatefulWidget {
   final Wisata wisata;
-  const DetailTegalalangPage({Key? key, required this.wisata})
+  const DetailUlunDanuBeratanPage({Key? key, required this.wisata})
       : super(key: key);
 
   @override
-  State<DetailTegalalangPage> createState() => _DetailTegalalangPageState();
+  State<DetailUlunDanuBeratanPage> createState() =>
+      _DetailUlunDanuBeratanPageState();
 }
 
-class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
+class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
   int _currentPage = 0;
   bool _isBookmarked = false;
   final String googleMapsUrl =
-      'https://www.google.com/maps/place/Tegallalang+Rice+Terrace/@-8.4317112,115.2767227,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd2220b23f900e3:0x8d1a8969386c04ed!8m2!3d-8.4317112!4d115.279303!16s%2Fm%2F0kcf42x?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
+      'https://www.google.com/maps/place/Pura+Ulun+Danu+Beratan+Bedugul/@-8.2751807,115.1642431,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd1896c9fac0857:0x18246568e4db1b53!8m2!3d-8.2751807!4d115.1668234!16s%2Fm%2F05zyg1h?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
   final List<String> foto = [
-    'images/tegalalang.jpg',
-    'images/tegalalang2.jpg',
-    'images/tegalalang3.jpg',
+    'images/ulundanu.jpg',
+    'images/ulundanu2.jpg',
+    'images/ulundanu3.jpg',
   ];
 
   Future<void> _launchMaps() async {
@@ -37,11 +38,11 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
 
   void _shareInfo() {
     Share.share(
-      'Yuk kunjungi Sawah Terasering Tegalalang di Gianyar!\n'
-      'Jam buka: 07:00 - 18:00\n'
-      'Sawah berundak dengan sistem subak tradisional. Spot foto dengan ayunan dan warung kopi di pinggir sawah.\n'
+      'Yuk kunjungi Pura Ulun Danu Beratan di Bedugul, Tabanan!\n'
+      'Jam buka: 07:00 - 19:00\n'
+      'Pura indah di tepi Danau Beratan dengan arsitektur megah dan udara sejuk. Sering muncul di uang kertas Rp50.000.\n'
       'Lokasi: $googleMapsUrl',
-      subject: 'Rekomendasi Wisata Bali - Tegalalang',
+      subject: 'Rekomendasi Wisata Bali - Ulun Danu Beratan',
     );
   }
 
@@ -112,7 +113,6 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                         },
                       ),
                     ),
-                    // Tombol back dan bookmark
                     Positioned(
                       top: 24,
                       left: 20,
@@ -150,7 +150,6 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                         ),
                       ),
                     ),
-                    // Indicator dot
                     Positioned(
                       bottom: 18,
                       left: 0,
@@ -222,7 +221,7 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                                     color: Color(0xFFF5A94D), size: 20),
                                 const SizedBox(width: 4),
                                 const Text(
-                                  "07:00 - 18:00",
+                                  "07:00 - 19:00",
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Color(0xFF6D6D6D),
@@ -248,7 +247,7 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                       ),
                       padding: const EdgeInsets.all(20),
                       child: const Text(
-                        "Sawah terasering Tegalalang menawarkan pemandangan hijau bertingkat. Cocok untuk foto dengan ayunan dan menikmati kopi di warung lokal.",
+                        "Pura Ulun Danu Beratan adalah pura indah di tepi Danau Beratan dengan arsitektur megah dan udara sejuk. Sering muncul di uang kertas Rp50.000. Dikelilingi kebun stroberi dan panorama pegunungan.",
                         style: TextStyle(
                           fontSize: 16,
                           color: Color(0xFF2F2F2F),
@@ -324,19 +323,19 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _InfoIcon(
-                          icon: Icons.forest_rounded,
-                          label: "Sawah",
-                          color: Colors.green,
+                          icon: Icons.water,
+                          label: "Danau",
+                          color: Colors.blue,
                         ),
                         _InfoIcon(
-                          icon: Icons.camera_alt_rounded,
-                          label: "Foto",
-                          color: Colors.purple,
+                          icon: Icons.temple_buddhist,
+                          label: "Pura",
+                          color: Colors.orange,
                         ),
                         _InfoIcon(
-                          icon: Icons.local_cafe_rounded,
-                          label: "Kopi",
-                          color: Colors.brown,
+                          icon: Icons.grass,
+                          label: "Stroberi",
+                          color: Colors.red,
                         ),
                       ],
                     ),

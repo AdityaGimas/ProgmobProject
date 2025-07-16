@@ -2,25 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/detailwisatamodel.dart';
-import 'package:progmob_kelompok/pages/event_list_page.dart';
+import 'event_list_page.dart';
 
-class DetailUbudPage extends StatefulWidget {
+class DetailKelingkingPage extends StatefulWidget {
   final Wisata wisata;
-  const DetailUbudPage({Key? key, required this.wisata}) : super(key: key);
+  const DetailKelingkingPage({Key? key, required this.wisata})
+      : super(key: key);
 
   @override
-  State<DetailUbudPage> createState() => _DetailUbudPageState();
+  State<DetailKelingkingPage> createState() => _DetailKelingkingPageState();
 }
 
-class _DetailUbudPageState extends State<DetailUbudPage> {
+class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
   int _currentPage = 0;
   bool _isBookmarked = false;
   final String googleMapsUrl =
-      'https://www.google.com/maps/place/Ubud,+Kecamatan+Ubud,+Kabupaten+Gianyar,+Bali/@-8.4961106,115.2453969,14z/data=!3m1!4b1!4m6!3m5!1s0x2dd23d739f22c9c3:0x54a38afd6b773d1c!8m2!3d-8.5068536!4d115.2624778!16zL20vMDRuMDk5?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
-  final List<String> foto = [
-    'images/ubud.jpg',
-    'images/ubud2.jpg',
-    'images/ubud3.jpg',
+      'https://www.google.com/maps/place/Kelingking+Beach+Nusa+Penida+Bali/@-8.7554547,115.4638441,15.33z/data=!4m6!3m5!1s0x2dd23d002b5349f5:0xc0e02ba4763d1f03!8m2!3d-8.752828!4d115.4723607!16s%2Fg%2F11y4yfz5wk?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
+  final List<String> fotoDestinasi = [
+    'images/kelingking.jpg',
+    'images/kelingking2.jpg',
+    'images/kelingking3.jpg',
   ];
 
   Future<void> _launchMaps() async {
@@ -29,23 +30,24 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
           mode: LaunchMode.externalApplication);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal membuka Google Maps')),
+        const SnackBar(content: Text('Tidak dapat membuka Google Maps')),
       );
     }
   }
 
   void _shareInfo() {
     Share.share(
-      'Yuk kunjungi Ubud di Gianyar!\n'
+      'Yuk kunjungi Pantai Kelingking di Nusa Penida!\n'
       'Jam buka: 24 Jam\n'
-      'Ubud adalah pusat budaya Bali dengan museum seni, pasar tradisional, dan hutan monyet. Cocok untuk penikmat seni dan alam.\n'
+      'Pantai dengan tebing berbentuk T-Rex dan pasir putih bersih. Spot foto ikonik Nusa Penida dengan panorama laut biru yang memukau.\n'
       'Lokasi: $googleMapsUrl',
-      subject: 'Rekomendasi Wisata Bali - Ubud',
+      subject: 'Rekomendasi Wisata Bali - Pantai Kelingking',
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: const Color(0xFFF9E8D9),
       floatingActionButton: SizedBox(
@@ -79,7 +81,7 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                       borderRadius: const BorderRadius.vertical(
                           bottom: Radius.circular(32)),
                       child: PageView.builder(
-                        itemCount: foto.length,
+                        itemCount: fotoDestinasi.length,
                         onPageChanged: (index) {
                           setState(() {
                             _currentPage = index;
@@ -90,7 +92,7 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                             fit: StackFit.expand,
                             children: [
                               Image.asset(
-                                foto[index],
+                                fotoDestinasi[index],
                                 fit: BoxFit.cover,
                               ),
                               Container(
@@ -154,7 +156,7 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                       right: 0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(foto.length, (index) {
+                        children: List.generate(fotoDestinasi.length, (index) {
                           return AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -194,11 +196,11 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.wisata.nama,
-                              style: const TextStyle(
-                                fontSize: 28,
+                              "Pantai Kelingking",
+                              style: theme.textTheme.headlineMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF2F2F2F),
+                                color: const Color(0xFF2F2F2F),
+                                fontSize: 28,
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -207,12 +209,10 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                                 const Icon(Icons.place,
                                     color: Color(0xFFF5A94D), size: 20),
                                 const SizedBox(width: 4),
-                                Text(
-                                  widget.wisata.lokasi,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Color(0xFF6D6D6D),
-                                  ),
+                                const Text(
+                                  "Nusa Penida, Klungkung",
+                                  style: TextStyle(
+                                      fontSize: 16, color: Color(0xFF6D6D6D)),
                                 ),
                                 const Spacer(),
                                 const Icon(Icons.access_time,
@@ -221,9 +221,7 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                                 const Text(
                                   "24 Jam",
                                   style: TextStyle(
-                                    fontSize: 16,
-                                    color: Color(0xFF6D6D6D),
-                                  ),
+                                      fontSize: 16, color: Color(0xFF6D6D6D)),
                                 ),
                               ],
                             ),
@@ -245,7 +243,7 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                       ),
                       padding: const EdgeInsets.all(20),
                       child: const Text(
-                        "Ubud adalah pusat budaya Bali dengan museum seni, pasar tradisional, dan hutan monyet. Cocok untuk penikmat seni dan alam.",
+                        "Pantai dengan tebing kapur berbentuk kepala dinosaurus T-Rex yang ikonik. Turun 500 anak tangga untuk sampai ke pantai dengan pasir putih dan air laut biru kehijauan. Spot foto favorit para influencer.",
                         style: TextStyle(
                           fontSize: 16,
                           color: Color(0xFF2F2F2F),
@@ -265,7 +263,6 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                               ),
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               elevation: 2,
-                              shadowColor: Colors.orangeAccent.withOpacity(0.2),
                             ),
                             icon: const Icon(Icons.map, color: Colors.white),
                             label: const Text(
@@ -290,7 +287,6 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                               side: const BorderSide(color: Color(0xFFF5A94D)),
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               elevation: 2,
-                              shadowColor: Colors.orangeAccent.withOpacity(0.2),
                             ),
                             icon: const Icon(Icons.event,
                                 color: Color(0xFFF5A94D)),
@@ -321,19 +317,19 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _InfoIcon(
-                          icon: Icons.art_track_rounded,
-                          label: "Seni",
+                          icon: Icons.terrain_rounded,
+                          label: "Tebing",
+                          color: Colors.brown,
+                        ),
+                        _InfoIcon(
+                          icon: Icons.beach_access_rounded,
+                          label: "Pantai",
+                          color: Colors.blue,
+                        ),
+                        _InfoIcon(
+                          icon: Icons.photo_camera_back_rounded,
+                          label: "Foto",
                           color: Colors.purple,
-                        ),
-                        _InfoIcon(
-                          icon: Icons.directions_walk_rounded,
-                          label: "Tari",
-                          color: Colors.orange,
-                        ),
-                        _InfoIcon(
-                          icon: Icons.shopping_bag_rounded,
-                          label: "Pasar",
-                          color: Colors.pink,
                         ),
                       ],
                     ),

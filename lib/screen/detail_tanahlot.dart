@@ -2,76 +2,71 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/detailwisatamodel.dart';
-import 'package:progmob_kelompok/pages/event_list_page.dart';
+import 'event_list_page.dart';
 
-class DetailUlunDanuBeratanPage extends StatefulWidget {
+class DetailTanahLotPage extends StatefulWidget {
   final Wisata wisata;
-  const DetailUlunDanuBeratanPage({Key? key, required this.wisata})
-      : super(key: key);
+  const DetailTanahLotPage({Key? key, required this.wisata}) : super(key: key);
 
   @override
-  State<DetailUlunDanuBeratanPage> createState() =>
-      _DetailUlunDanuBeratanPageState();
+  State<DetailTanahLotPage> createState() => _DetailTanahLotPageState();
 }
 
-class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
+class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
   int _currentPage = 0;
-  bool _isBookmarked = false;
+  bool _isBookmarked = false; // Status bookmark
+
   final String googleMapsUrl =
-      'https://www.google.com/maps/place/Pura+Ulun+Danu+Beratan+Bedugul/@-8.2751807,115.1642431,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd1896c9fac0857:0x18246568e4db1b53!8m2!3d-8.2751807!4d115.1668234!16s%2Fm%2F05zyg1h?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
-  final List<String> foto = [
-    'images/ulundanu.jpg',
-    'images/ulundanu2.jpg',
-    'images/ulundanu3.jpg',
+      'https://www.google.com/maps/place/Tanah+Lot/@-8.6212118,115.0842229,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd237824f71deab:0xcaabe270f7e34d69!8m2!3d-8.621213!4d115.086807!16zL20vMGJ2NGRo?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
+
+  final List<String> fotoTanahLot = [
+    'images/tanahlot.jpg',
+    'images/tanahlot2.jpg',
+    'images/tanahlot3.jpg',
   ];
 
   Future<void> _launchMaps() async {
     if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
-      await launchUrl(Uri.parse(googleMapsUrl),
-          mode: LaunchMode.externalApplication);
+      await launchUrl(
+        Uri.parse(googleMapsUrl),
+        mode: LaunchMode.externalApplication,
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal membuka Google Maps')),
+        const SnackBar(content: Text('Tidak dapat membuka Google Maps')),
       );
     }
   }
 
   void _shareInfo() {
     Share.share(
-      'Yuk kunjungi Pura Ulun Danu Beratan di Bedugul, Tabanan!\n'
+      'Yuk kunjungi Pura Tanah Lot di Tabanan, Bali!\n'
       'Jam buka: 07:00 - 19:00\n'
-      'Pura indah di tepi Danau Beratan dengan arsitektur megah dan udara sejuk. Sering muncul di uang kertas Rp50.000.\n'
+      'Pura Tanah Lot berdiri di atas batu karang di tepi laut, menjadi ikon budaya dan spiritual Bali. Tempat ini sangat populer untuk menikmati pemandangan matahari terbenam yang spektakuler. Pura ini juga menjadi salah satu situs warisan budaya UNESCO.\n'
       'Lokasi: $googleMapsUrl',
-      subject: 'Rekomendasi Wisata Bali - Ulun Danu Beratan',
+      subject: 'Rekomendasi Wisata Bali - Tanah Lot',
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: const Color(0xFFF9E8D9),
-      floatingActionButton: SizedBox(
-        width: 44,
-        height: 44,
-        child: FloatingActionButton(
-          onPressed: _shareInfo,
-          backgroundColor: const Color(0xFFF5A94D),
-          child: const Icon(
-            Icons.share,
-            color: Colors.white,
-            size: 20,
-          ),
-          elevation: 6,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _shareInfo,
+        backgroundColor: const Color(0xFFF5A94D),
+        child: const Icon(Icons.share, color: Colors.white, size: 20),
+        elevation: 6,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        tooltip: 'Bagikan',
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Carousel gambar (ikut scroll)
+              // Gambar carousel (ikut scroll)
               SizedBox(
                 height: 300,
                 width: double.infinity,
@@ -79,9 +74,10 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                   children: [
                     ClipRRect(
                       borderRadius: const BorderRadius.vertical(
-                          bottom: Radius.circular(32)),
+                        bottom: Radius.circular(32),
+                      ),
                       child: PageView.builder(
-                        itemCount: foto.length,
+                        itemCount: fotoTanahLot.length,
                         onPageChanged: (index) {
                           setState(() {
                             _currentPage = index;
@@ -92,7 +88,7 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                             fit: StackFit.expand,
                             children: [
                               Image.asset(
-                                foto[index],
+                                fotoTanahLot[index],
                                 fit: BoxFit.cover,
                               ),
                               Container(
@@ -113,18 +109,22 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                         },
                       ),
                     ),
+                    // Tombol back
                     Positioned(
                       top: 24,
                       left: 20,
                       child: CircleAvatar(
                         backgroundColor: Colors.white.withOpacity(0.85),
                         child: IconButton(
-                          icon: const Icon(Icons.arrow_back,
-                              color: Color(0xFF2F2F2F)),
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Color(0xFF2F2F2F),
+                          ),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ),
                     ),
+                    // Tombol bookmark AKTIF
                     Positioned(
                       top: 24,
                       right: 20,
@@ -135,37 +135,41 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                             _isBookmarked
                                 ? Icons.bookmark
                                 : Icons.bookmark_border,
-                            color: _isBookmarked
-                                ? Color(0xFFF5A94D)
-                                : Color(0xFF2F2F2F),
+                            color:
+                                _isBookmarked
+                                    ? Color(0xFFF5A94D)
+                                    : Color(0xFF2F2F2F),
                           ),
                           onPressed: () {
                             setState(() {
                               _isBookmarked = !_isBookmarked;
                             });
                           },
-                          tooltip: _isBookmarked
-                              ? 'Hapus Bookmark'
-                              : 'Tambah Bookmark',
+                          tooltip:
+                              _isBookmarked
+                                  ? 'Hapus Bookmark'
+                                  : 'Tambah Bookmark',
                         ),
                       ),
                     ),
+                    // Indicator dot
                     Positioned(
                       bottom: 18,
                       left: 0,
                       right: 0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(foto.length, (index) {
+                        children: List.generate(fotoTanahLot.length, (index) {
                           return AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             margin: const EdgeInsets.symmetric(horizontal: 4),
                             width: _currentPage == index ? 22 : 8,
                             height: 8,
                             decoration: BoxDecoration(
-                              color: _currentPage == index
-                                  ? const Color(0xFFF5A94D)
-                                  : Colors.white.withOpacity(0.8),
+                              color:
+                                  _currentPage == index
+                                      ? const Color(0xFFF5A94D)
+                                      : Colors.white.withOpacity(0.8),
                               borderRadius: BorderRadius.circular(8),
                             ),
                           );
@@ -175,13 +179,16 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                   ],
                 ),
               ),
-              // Konten detail (ikut scroll)
+              // Konten detail di bawah (ikut scroll)
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 20,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Judul dan lokasi dalam card
                     Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
@@ -191,23 +198,28 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                       margin: const EdgeInsets.only(bottom: 20),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 18),
+                          horizontal: 20,
+                          vertical: 18,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               widget.wisata.nama,
-                              style: const TextStyle(
-                                fontSize: 28,
+                              style: theme.textTheme.headlineMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF2F2F2F),
+                                color: const Color(0xFF2F2F2F),
+                                fontSize: 28,
                               ),
                             ),
                             const SizedBox(height: 8),
                             Row(
                               children: [
-                                const Icon(Icons.place,
-                                    color: Color(0xFFF5A94D), size: 20),
+                                const Icon(
+                                  Icons.place,
+                                  color: Color(0xFFF5A94D),
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   widget.wisata.lokasi,
@@ -217,8 +229,11 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                                   ),
                                 ),
                                 const Spacer(),
-                                const Icon(Icons.access_time,
-                                    color: Color(0xFFF5A94D), size: 20),
+                                const Icon(
+                                  Icons.access_time,
+                                  color: Color(0xFFF5A94D),
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 4),
                                 const Text(
                                   "07:00 - 19:00",
@@ -233,6 +248,7 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                         ),
                       ),
                     ),
+                    // Deskripsi
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -247,7 +263,7 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                       ),
                       padding: const EdgeInsets.all(20),
                       child: const Text(
-                        "Pura Ulun Danu Beratan adalah pura indah di tepi Danau Beratan dengan arsitektur megah dan udara sejuk. Sering muncul di uang kertas Rp50.000. Dikelilingi kebun stroberi dan panorama pegunungan.",
+                        "Pura Tanah Lot berdiri di atas batu karang di tepi laut, menjadi ikon budaya dan spiritual Bali. Tempat ini sangat populer untuk menikmati pemandangan matahari terbenam yang spektakuler. Pura ini juga menjadi salah satu situs warisan budaya UNESCO.",
                         style: TextStyle(
                           fontSize: 16,
                           color: Color(0xFF2F2F2F),
@@ -256,6 +272,7 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                       ),
                     ),
                     const SizedBox(height: 32),
+                    // Tombol aksi
                     Row(
                       children: [
                         Expanded(
@@ -294,8 +311,10 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                               elevation: 2,
                               shadowColor: Colors.orangeAccent.withOpacity(0.2),
                             ),
-                            icon: const Icon(Icons.event,
-                                color: Color(0xFFF5A94D)),
+                            icon: const Icon(
+                              Icons.event,
+                              color: Color(0xFFF5A94D),
+                            ),
                             label: const Text(
                               "Lihat Event",
                               style: TextStyle(
@@ -308,9 +327,13 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => EventListPage(
-                                    namaWisata: widget.wisata.nama, // kirim nama tempat wisata
-                                  ),
+                                  builder:
+                                      (context) => EventListPage(
+                                        namaWisata:
+                                            widget
+                                                .wisata
+                                                .nama, // kirim nama tempat wisata
+                                      ),
                                 ),
                               );
                             },
@@ -319,23 +342,24 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                       ],
                     ),
                     const SizedBox(height: 24),
+                    // Section info tambahan (opsional aesthetic)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _InfoIcon(
-                          icon: Icons.water,
-                          label: "Danau",
-                          color: Colors.blue,
+                          icon: Icons.wb_sunny_rounded,
+                          label: "Sunset",
+                          color: Colors.orangeAccent,
                         ),
                         _InfoIcon(
-                          icon: Icons.temple_buddhist,
-                          label: "Pura",
-                          color: Colors.orange,
+                          icon: Icons.camera_alt_rounded,
+                          label: "Spot Foto",
+                          color: Colors.purpleAccent,
                         ),
                         _InfoIcon(
-                          icon: Icons.grass,
-                          label: "Stroberi",
-                          color: Colors.red,
+                          icon: Icons.spa_rounded,
+                          label: "Budaya",
+                          color: Colors.green,
                         ),
                       ],
                     ),

@@ -2,26 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/detailwisatamodel.dart';
-import 'package:progmob_kelompok/pages/event_list_page.dart';
+import 'event_list_page.dart';
 
-class DetailPantaiKutaPage extends StatefulWidget {
+class DetailGWKPage extends StatefulWidget {
   final Wisata wisata;
-  const DetailPantaiKutaPage({Key? key, required this.wisata})
-      : super(key: key);
+  const DetailGWKPage({Key? key, required this.wisata}) : super(key: key);
 
   @override
-  State<DetailPantaiKutaPage> createState() => _DetailPantaiKutaPageState();
+  State<DetailGWKPage> createState() => _DetailGWKPageState();
 }
 
-class _DetailPantaiKutaPageState extends State<DetailPantaiKutaPage> {
+class _DetailGWKPageState extends State<DetailGWKPage> {
   int _currentPage = 0;
   bool _isBookmarked = false;
   final String googleMapsUrl =
-      'https://www.google.com/maps/place/Pantai+Kuta/@-8.7180324,115.1577133,15z/data=!3m1!4b1!4m6!3m5!1s0x2dd246bc2ab70d43:0x82feaae12f4ab48e!8m2!3d-8.7184926!4d115.1686322!16s%2Fg%2F11c1p6r11n?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
+      'https://www.google.com/maps/place/Taman+Budaya+Garuda+Wisnu+Kencana/@-8.8104228,115.1650183,16z/data=!3m1!4b1!4m6!3m5!1s0x2dd244cf54e1dec7:0x1988663e064f5a51!8m2!3d-8.8104228!4d115.1675986!16zL20vMGRyenpx?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
   final List<String> foto = [
-    'images/kuta.jpg',
-    'images/kuta2.jpg',
-    'images/kuta3.jpg',
+    'images/gwk.jpg',
+    'images/gwk2.jpg',
+    'images/gwk3.jpg',
   ];
 
   Future<void> _launchMaps() async {
@@ -37,11 +36,11 @@ class _DetailPantaiKutaPageState extends State<DetailPantaiKutaPage> {
 
   void _shareInfo() {
     Share.share(
-      'Yuk kunjungi Pantai Kuta di Badung!\n'
-      'Jam buka: 24 Jam\n'
-      'Pantai ikonik dengan ombak surfing dan sunset romantis. Dikelilingi kafe dan pusat perbelanjaan.\n'
+      'Yuk kunjungi Garuda Wisnu Kencana (GWK) di Ungasan, Badung!\n'
+      'Jam buka: 09:00 - 18:00\n'
+      'Taman budaya dengan patung Dewa Wisnu dan Garuda raksasa setinggi 120 meter, pertunjukan seni, dan panorama Bali Selatan.\n'
       'Lokasi: $googleMapsUrl',
-      subject: 'Rekomendasi Wisata Bali',
+      subject: 'Rekomendasi Wisata Bali - GWK',
     );
   }
 
@@ -112,6 +111,7 @@ class _DetailPantaiKutaPageState extends State<DetailPantaiKutaPage> {
                         },
                       ),
                     ),
+                    // Tombol back dan bookmark
                     Positioned(
                       top: 24,
                       left: 20,
@@ -149,6 +149,7 @@ class _DetailPantaiKutaPageState extends State<DetailPantaiKutaPage> {
                         ),
                       ),
                     ),
+                    // Indicator dot
                     Positioned(
                       bottom: 18,
                       left: 0,
@@ -220,7 +221,7 @@ class _DetailPantaiKutaPageState extends State<DetailPantaiKutaPage> {
                                     color: Color(0xFFF5A94D), size: 20),
                                 const SizedBox(width: 4),
                                 const Text(
-                                  "24 Jam",
+                                  "09:00 - 18:00",
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Color(0xFF6D6D6D),
@@ -246,7 +247,7 @@ class _DetailPantaiKutaPageState extends State<DetailPantaiKutaPage> {
                       ),
                       padding: const EdgeInsets.all(20),
                       child: const Text(
-                        "Pantai Kuta adalah destinasi wisata favorit di Bali dengan pasir putih dan ombak ideal untuk selancar. Dikelilingi kafe, restoran, dan pusat perbelanjaan.",
+                        "Garuda Wisnu Kencana (GWK) adalah taman budaya di atas bukit kapur, menampilkan patung Dewa Wisnu dan Garuda raksasa setinggi 120 meter. Selain patung ikonik, GWK juga menawarkan taman luas, pertunjukan seni, street theater, dan panorama Bali Selatan dari ketinggian.",
                         style: TextStyle(
                           fontSize: 16,
                           color: Color(0xFF2F2F2F),
@@ -322,19 +323,19 @@ class _DetailPantaiKutaPageState extends State<DetailPantaiKutaPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _InfoIcon(
-                          icon: Icons.surfing_rounded,
-                          label: "Surfing",
+                          icon: Icons.park_rounded,
+                          label: "Taman",
+                          color: Colors.green,
+                        ),
+                        _InfoIcon(
+                          icon: Icons.theater_comedy_rounded,
+                          label: "Seni",
+                          color: Colors.purple,
+                        ),
+                        _InfoIcon(
+                          icon: Icons.panorama_rounded,
+                          label: "Panorama",
                           color: Colors.blue,
-                        ),
-                        _InfoIcon(
-                          icon: Icons.shopping_bag_rounded,
-                          label: "Shopping",
-                          color: Colors.pink,
-                        ),
-                        _InfoIcon(
-                          icon: Icons.wb_sunny_rounded,
-                          label: "Sunset",
-                          color: Colors.orange,
                         ),
                       ],
                     ),

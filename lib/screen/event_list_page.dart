@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/event_data.dart';         // untuk data event
-import '../pages/event_card.dart';         // untuk komponen kartu event
+import 'event_card.dart';         // untuk komponen kartu event
 
 class EventListPage extends StatelessWidget {
   final String namaWisata;

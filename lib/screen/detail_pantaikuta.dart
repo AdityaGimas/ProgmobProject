@@ -2,26 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/detailwisatamodel.dart';
-import 'package:progmob_kelompok/pages/event_list_page.dart';
+import 'event_list_page.dart';
 
-class DetailKelingkingPage extends StatefulWidget {
+class DetailPantaiKutaPage extends StatefulWidget {
   final Wisata wisata;
-  const DetailKelingkingPage({Key? key, required this.wisata})
+  const DetailPantaiKutaPage({Key? key, required this.wisata})
       : super(key: key);
 
   @override
-  State<DetailKelingkingPage> createState() => _DetailKelingkingPageState();
+  State<DetailPantaiKutaPage> createState() => _DetailPantaiKutaPageState();
 }
 
-class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
+class _DetailPantaiKutaPageState extends State<DetailPantaiKutaPage> {
   int _currentPage = 0;
   bool _isBookmarked = false;
   final String googleMapsUrl =
-      'https://www.google.com/maps/place/Kelingking+Beach+Nusa+Penida+Bali/@-8.7554547,115.4638441,15.33z/data=!4m6!3m5!1s0x2dd23d002b5349f5:0xc0e02ba4763d1f03!8m2!3d-8.752828!4d115.4723607!16s%2Fg%2F11y4yfz5wk?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
-  final List<String> fotoDestinasi = [
-    'images/kelingking.jpg',
-    'images/kelingking2.jpg',
-    'images/kelingking3.jpg',
+      'https://www.google.com/maps/place/Pantai+Kuta/@-8.7180324,115.1577133,15z/data=!3m1!4b1!4m6!3m5!1s0x2dd246bc2ab70d43:0x82feaae12f4ab48e!8m2!3d-8.7184926!4d115.1686322!16s%2Fg%2F11c1p6r11n?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
+  final List<String> foto = [
+    'images/kuta.jpg',
+    'images/kuta2.jpg',
+    'images/kuta3.jpg',
   ];
 
   Future<void> _launchMaps() async {
@@ -30,24 +30,23 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
           mode: LaunchMode.externalApplication);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Tidak dapat membuka Google Maps')),
+        const SnackBar(content: Text('Gagal membuka Google Maps')),
       );
     }
   }
 
   void _shareInfo() {
     Share.share(
-      'Yuk kunjungi Pantai Kelingking di Nusa Penida!\n'
+      'Yuk kunjungi Pantai Kuta di Badung!\n'
       'Jam buka: 24 Jam\n'
-      'Pantai dengan tebing berbentuk T-Rex dan pasir putih bersih. Spot foto ikonik Nusa Penida dengan panorama laut biru yang memukau.\n'
+      'Pantai ikonik dengan ombak surfing dan sunset romantis. Dikelilingi kafe dan pusat perbelanjaan.\n'
       'Lokasi: $googleMapsUrl',
-      subject: 'Rekomendasi Wisata Bali - Pantai Kelingking',
+      subject: 'Rekomendasi Wisata Bali',
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: const Color(0xFFF9E8D9),
       floatingActionButton: SizedBox(
@@ -81,7 +80,7 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                       borderRadius: const BorderRadius.vertical(
                           bottom: Radius.circular(32)),
                       child: PageView.builder(
-                        itemCount: fotoDestinasi.length,
+                        itemCount: foto.length,
                         onPageChanged: (index) {
                           setState(() {
                             _currentPage = index;
@@ -92,7 +91,7 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                             fit: StackFit.expand,
                             children: [
                               Image.asset(
-                                fotoDestinasi[index],
+                                foto[index],
                                 fit: BoxFit.cover,
                               ),
                               Container(
@@ -156,7 +155,7 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                       right: 0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(fotoDestinasi.length, (index) {
+                        children: List.generate(foto.length, (index) {
                           return AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -196,11 +195,11 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Pantai Kelingking",
-                              style: theme.textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF2F2F2F),
+                              widget.wisata.nama,
+                              style: const TextStyle(
                                 fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2F2F2F),
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -209,10 +208,12 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                                 const Icon(Icons.place,
                                     color: Color(0xFFF5A94D), size: 20),
                                 const SizedBox(width: 4),
-                                const Text(
-                                  "Nusa Penida, Klungkung",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Color(0xFF6D6D6D)),
+                                Text(
+                                  widget.wisata.lokasi,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Color(0xFF6D6D6D),
+                                  ),
                                 ),
                                 const Spacer(),
                                 const Icon(Icons.access_time,
@@ -221,7 +222,9 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                                 const Text(
                                   "24 Jam",
                                   style: TextStyle(
-                                      fontSize: 16, color: Color(0xFF6D6D6D)),
+                                    fontSize: 16,
+                                    color: Color(0xFF6D6D6D),
+                                  ),
                                 ),
                               ],
                             ),
@@ -243,7 +246,7 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                       ),
                       padding: const EdgeInsets.all(20),
                       child: const Text(
-                        "Pantai dengan tebing kapur berbentuk kepala dinosaurus T-Rex yang ikonik. Turun 500 anak tangga untuk sampai ke pantai dengan pasir putih dan air laut biru kehijauan. Spot foto favorit para influencer.",
+                        "Pantai Kuta adalah destinasi wisata favorit di Bali dengan pasir putih dan ombak ideal untuk selancar. Dikelilingi kafe, restoran, dan pusat perbelanjaan.",
                         style: TextStyle(
                           fontSize: 16,
                           color: Color(0xFF2F2F2F),
@@ -263,6 +266,7 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                               ),
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               elevation: 2,
+                              shadowColor: Colors.orangeAccent.withOpacity(0.2),
                             ),
                             icon: const Icon(Icons.map, color: Colors.white),
                             label: const Text(
@@ -287,6 +291,7 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                               side: const BorderSide(color: Color(0xFFF5A94D)),
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               elevation: 2,
+                              shadowColor: Colors.orangeAccent.withOpacity(0.2),
                             ),
                             icon: const Icon(Icons.event,
                                 color: Color(0xFFF5A94D)),
@@ -317,19 +322,19 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _InfoIcon(
-                          icon: Icons.terrain_rounded,
-                          label: "Tebing",
-                          color: Colors.brown,
-                        ),
-                        _InfoIcon(
-                          icon: Icons.beach_access_rounded,
-                          label: "Pantai",
+                          icon: Icons.surfing_rounded,
+                          label: "Surfing",
                           color: Colors.blue,
                         ),
                         _InfoIcon(
-                          icon: Icons.photo_camera_back_rounded,
-                          label: "Foto",
-                          color: Colors.purple,
+                          icon: Icons.shopping_bag_rounded,
+                          label: "Shopping",
+                          color: Colors.pink,
+                        ),
+                        _InfoIcon(
+                          icon: Icons.wb_sunny_rounded,
+                          label: "Sunset",
+                          color: Colors.orange,
                         ),
                       ],
                     ),

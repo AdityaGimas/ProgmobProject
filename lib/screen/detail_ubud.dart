@@ -2,25 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/detailwisatamodel.dart';
-import 'package:progmob_kelompok/pages/event_list_page.dart';
+import 'event_list_page.dart';
 
-class DetailGWKPage extends StatefulWidget {
+class DetailUbudPage extends StatefulWidget {
   final Wisata wisata;
-  const DetailGWKPage({Key? key, required this.wisata}) : super(key: key);
+  const DetailUbudPage({Key? key, required this.wisata}) : super(key: key);
 
   @override
-  State<DetailGWKPage> createState() => _DetailGWKPageState();
+  State<DetailUbudPage> createState() => _DetailUbudPageState();
 }
 
-class _DetailGWKPageState extends State<DetailGWKPage> {
+class _DetailUbudPageState extends State<DetailUbudPage> {
   int _currentPage = 0;
   bool _isBookmarked = false;
   final String googleMapsUrl =
-      'https://www.google.com/maps/place/Taman+Budaya+Garuda+Wisnu+Kencana/@-8.8104228,115.1650183,16z/data=!3m1!4b1!4m6!3m5!1s0x2dd244cf54e1dec7:0x1988663e064f5a51!8m2!3d-8.8104228!4d115.1675986!16zL20vMGRyenpx?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
+      'https://www.google.com/maps/place/Ubud,+Kecamatan+Ubud,+Kabupaten+Gianyar,+Bali/@-8.4961106,115.2453969,14z/data=!3m1!4b1!4m6!3m5!1s0x2dd23d739f22c9c3:0x54a38afd6b773d1c!8m2!3d-8.5068536!4d115.2624778!16zL20vMDRuMDk5?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
   final List<String> foto = [
-    'images/gwk.jpg',
-    'images/gwk2.jpg',
-    'images/gwk3.jpg',
+    'images/ubud.jpg',
+    'images/ubud2.jpg',
+    'images/ubud3.jpg',
   ];
 
   Future<void> _launchMaps() async {
@@ -36,11 +36,11 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
 
   void _shareInfo() {
     Share.share(
-      'Yuk kunjungi Garuda Wisnu Kencana (GWK) di Ungasan, Badung!\n'
-      'Jam buka: 09:00 - 18:00\n'
-      'Taman budaya dengan patung Dewa Wisnu dan Garuda raksasa setinggi 120 meter, pertunjukan seni, dan panorama Bali Selatan.\n'
+      'Yuk kunjungi Ubud di Gianyar!\n'
+      'Jam buka: 24 Jam\n'
+      'Ubud adalah pusat budaya Bali dengan museum seni, pasar tradisional, dan hutan monyet. Cocok untuk penikmat seni dan alam.\n'
       'Lokasi: $googleMapsUrl',
-      subject: 'Rekomendasi Wisata Bali - GWK',
+      subject: 'Rekomendasi Wisata Bali - Ubud',
     );
   }
 
@@ -111,7 +111,6 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                         },
                       ),
                     ),
-                    // Tombol back dan bookmark
                     Positioned(
                       top: 24,
                       left: 20,
@@ -149,7 +148,6 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                         ),
                       ),
                     ),
-                    // Indicator dot
                     Positioned(
                       bottom: 18,
                       left: 0,
@@ -221,7 +219,7 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                                     color: Color(0xFFF5A94D), size: 20),
                                 const SizedBox(width: 4),
                                 const Text(
-                                  "09:00 - 18:00",
+                                  "24 Jam",
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Color(0xFF6D6D6D),
@@ -247,7 +245,7 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                       ),
                       padding: const EdgeInsets.all(20),
                       child: const Text(
-                        "Garuda Wisnu Kencana (GWK) adalah taman budaya di atas bukit kapur, menampilkan patung Dewa Wisnu dan Garuda raksasa setinggi 120 meter. Selain patung ikonik, GWK juga menawarkan taman luas, pertunjukan seni, street theater, dan panorama Bali Selatan dari ketinggian.",
+                        "Ubud adalah pusat budaya Bali dengan museum seni, pasar tradisional, dan hutan monyet. Cocok untuk penikmat seni dan alam.",
                         style: TextStyle(
                           fontSize: 16,
                           color: Color(0xFF2F2F2F),
@@ -323,19 +321,19 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _InfoIcon(
-                          icon: Icons.park_rounded,
-                          label: "Taman",
-                          color: Colors.green,
-                        ),
-                        _InfoIcon(
-                          icon: Icons.theater_comedy_rounded,
+                          icon: Icons.art_track_rounded,
                           label: "Seni",
                           color: Colors.purple,
                         ),
                         _InfoIcon(
-                          icon: Icons.panorama_rounded,
-                          label: "Panorama",
-                          color: Colors.blue,
+                          icon: Icons.directions_walk_rounded,
+                          label: "Tari",
+                          color: Colors.orange,
+                        ),
+                        _InfoIcon(
+                          icon: Icons.shopping_bag_rounded,
+                          label: "Pasar",
+                          color: Colors.pink,
                         ),
                       ],
                     ),
