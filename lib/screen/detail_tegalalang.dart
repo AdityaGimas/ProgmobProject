@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/detailwisatamodel.dart';
 import 'event_list_page.dart';
+import 'reservation_form_page.dart';
 
 class DetailTegalalangPage extends StatefulWidget {
   final Wisata wisata;
@@ -295,8 +296,10 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                               elevation: 2,
                               shadowColor: Colors.orangeAccent.withOpacity(0.2),
                             ),
-                            icon: const Icon(Icons.event,
-                                color: Color(0xFFF5A94D)),
+                            icon: const Icon(
+                              Icons.event,
+                              color: Color(0xFFF5A94D),
+                            ),
                             label: const Text(
                               "Lihat Event",
                               style: TextStyle(
@@ -309,9 +312,48 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => EventListPage(
-                                    namaWisata: widget.wisata.nama, // kirim nama tempat wisata
-                                  ),
+                                  builder:
+                                      (context) => EventListPage(
+                                        namaWisata: widget.wisata.nama,
+                                      ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        // Tombol Reservasi
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              elevation: 2,
+                              shadowColor: Colors.greenAccent.withOpacity(0.2),
+                            ),
+                            icon: const Icon(
+                              Icons.calendar_month,
+                              color: Colors.white,
+                            ),
+                            label: const Text(
+                              "Reservasi",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => ReservationFormPage(
+                                        namaWisata: widget.wisata.nama,
+                                      ),
                                 ),
                               );
                             },

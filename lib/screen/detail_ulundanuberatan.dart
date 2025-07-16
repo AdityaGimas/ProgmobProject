@@ -3,11 +3,12 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
 import '../models/detailwisatamodel.dart';
 import 'event_list_page.dart';
+import 'reservation_form_page.dart';
 
 class DetailUlunDanuBeratanPage extends StatefulWidget {
   final Wisata wisata;
   const DetailUlunDanuBeratanPage({Key? key, required this.wisata})
-      : super(key: key);
+    : super(key: key);
 
   @override
   State<DetailUlunDanuBeratanPage> createState() =>
@@ -27,8 +28,10 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
 
   Future<void> _launchMaps() async {
     if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
-      await launchUrl(Uri.parse(googleMapsUrl),
-          mode: LaunchMode.externalApplication);
+      await launchUrl(
+        Uri.parse(googleMapsUrl),
+        mode: LaunchMode.externalApplication,
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Gagal membuka Google Maps')),
@@ -56,14 +59,11 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
         child: FloatingActionButton(
           onPressed: _shareInfo,
           backgroundColor: const Color(0xFFF5A94D),
-          child: const Icon(
-            Icons.share,
-            color: Colors.white,
-            size: 20,
-          ),
+          child: const Icon(Icons.share, color: Colors.white, size: 20),
           elevation: 6,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
         ),
       ),
       body: SafeArea(
@@ -79,7 +79,8 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                   children: [
                     ClipRRect(
                       borderRadius: const BorderRadius.vertical(
-                          bottom: Radius.circular(32)),
+                        bottom: Radius.circular(32),
+                      ),
                       child: PageView.builder(
                         itemCount: foto.length,
                         onPageChanged: (index) {
@@ -91,10 +92,7 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                           return Stack(
                             fit: StackFit.expand,
                             children: [
-                              Image.asset(
-                                foto[index],
-                                fit: BoxFit.cover,
-                              ),
+                              Image.asset(foto[index], fit: BoxFit.cover),
                               Container(
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
@@ -119,8 +117,10 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                       child: CircleAvatar(
                         backgroundColor: Colors.white.withOpacity(0.85),
                         child: IconButton(
-                          icon: const Icon(Icons.arrow_back,
-                              color: Color(0xFF2F2F2F)),
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Color(0xFF2F2F2F),
+                          ),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ),
@@ -135,18 +135,20 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                             _isBookmarked
                                 ? Icons.bookmark
                                 : Icons.bookmark_border,
-                            color: _isBookmarked
-                                ? Color(0xFFF5A94D)
-                                : Color(0xFF2F2F2F),
+                            color:
+                                _isBookmarked
+                                    ? Color(0xFFF5A94D)
+                                    : Color(0xFF2F2F2F),
                           ),
                           onPressed: () {
                             setState(() {
                               _isBookmarked = !_isBookmarked;
                             });
                           },
-                          tooltip: _isBookmarked
-                              ? 'Hapus Bookmark'
-                              : 'Tambah Bookmark',
+                          tooltip:
+                              _isBookmarked
+                                  ? 'Hapus Bookmark'
+                                  : 'Tambah Bookmark',
                         ),
                       ),
                     ),
@@ -163,9 +165,10 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                             width: _currentPage == index ? 22 : 8,
                             height: 8,
                             decoration: BoxDecoration(
-                              color: _currentPage == index
-                                  ? const Color(0xFFF5A94D)
-                                  : Colors.white.withOpacity(0.8),
+                              color:
+                                  _currentPage == index
+                                      ? const Color(0xFFF5A94D)
+                                      : Colors.white.withOpacity(0.8),
                               borderRadius: BorderRadius.circular(8),
                             ),
                           );
@@ -177,8 +180,10 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
               ),
               // Konten detail (ikut scroll)
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 20,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -191,7 +196,9 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                       margin: const EdgeInsets.only(bottom: 20),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 18),
+                          horizontal: 20,
+                          vertical: 18,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -206,8 +213,11 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                             const SizedBox(height: 8),
                             Row(
                               children: [
-                                const Icon(Icons.place,
-                                    color: Color(0xFFF5A94D), size: 20),
+                                const Icon(
+                                  Icons.place,
+                                  color: Color(0xFFF5A94D),
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   widget.wisata.lokasi,
@@ -217,8 +227,11 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                                   ),
                                 ),
                                 const Spacer(),
-                                const Icon(Icons.access_time,
-                                    color: Color(0xFFF5A94D), size: 20),
+                                const Icon(
+                                  Icons.access_time,
+                                  color: Color(0xFFF5A94D),
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 4),
                                 const Text(
                                   "07:00 - 19:00",
@@ -294,8 +307,10 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                               elevation: 2,
                               shadowColor: Colors.orangeAccent.withOpacity(0.2),
                             ),
-                            icon: const Icon(Icons.event,
-                                color: Color(0xFFF5A94D)),
+                            icon: const Icon(
+                              Icons.event,
+                              color: Color(0xFFF5A94D),
+                            ),
                             label: const Text(
                               "Lihat Event",
                               style: TextStyle(
@@ -308,9 +323,48 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => EventListPage(
-                                    namaWisata: widget.wisata.nama, // kirim nama tempat wisata
-                                  ),
+                                  builder:
+                                      (context) => EventListPage(
+                                        namaWisata: widget.wisata.nama,
+                                      ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        // Tombol Reservasi
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              elevation: 2,
+                              shadowColor: Colors.greenAccent.withOpacity(0.2),
+                            ),
+                            icon: const Icon(
+                              Icons.calendar_month,
+                              color: Colors.white,
+                            ),
+                            label: const Text(
+                              "Reservasi",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => ReservationFormPage(
+                                        namaWisata: widget.wisata.nama,
+                                      ),
                                 ),
                               );
                             },
