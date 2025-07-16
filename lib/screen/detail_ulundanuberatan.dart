@@ -1,30 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:video_player/video_player.dart';
 import '../models/detailwisatamodel.dart';
 import 'event_list_page.dart';
 import 'reservation_form_page.dart';
 
-class DetailUlunDanuBeratanPage extends StatefulWidget {
+class DetailUlunDanuPage extends StatefulWidget {
   final Wisata wisata;
-  const DetailUlunDanuBeratanPage({Key? key, required this.wisata})
-    : super(key: key);
+  const DetailUlunDanuPage({Key? key, required this.wisata}) : super(key: key);
 
   @override
-  State<DetailUlunDanuBeratanPage> createState() =>
-      _DetailUlunDanuBeratanPageState();
+  State<DetailUlunDanuPage> createState() => _DetailUlunDanuPageState();
 }
 
-class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
+class _DetailUlunDanuPageState extends State<DetailUlunDanuPage> {
   int _currentPage = 0;
   bool _isBookmarked = false;
+  VideoPlayerController? _videoController;
   final String googleMapsUrl =
-      'https://www.google.com/maps/place/Pura+Ulun+Danu+Beratan+Bedugul/@-8.2751807,115.1642431,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd1896c9fac0857:0x18246568e4db1b53!8m2!3d-8.2751807!4d115.1668234!16s%2Fm%2F05zyg1h?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
-  final List<String> foto = [
-    'images/ulundanu.jpg',
-    'images/ulundanu2.jpg',
-    'images/ulundanu3.jpg',
+      'https://www.google.com/maps/place/Ulun+Danu+Beratan/@-8.275,115.167,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd2470b0b0b0b0b:0x0b0b0b0b0b0b0b0b!8m2!3d-8.275!4d115.169!16s%2Fg%2F11c4w2w2w2';
+  final List<Map<String, String>> media = [
+    {'type': 'image', 'path': 'images/ulundanu.jpg'},
+    {'type': 'image', 'path': 'images/ulundanu2.jpg'},
+    {'type': 'image', 'path': 'images/ulundanu3.jpg'},
+    {'type': 'video', 'path': 'assets/video/Ulun_danu_fix.mp4'},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _videoController = VideoPlayerController.asset('assets/video/Ulun_danu_fix.mp4')
+      ..initialize().then((_) {
+        setState(() {});
+      });
+    _videoController?.setLooping(true);
+    _videoController?.setVolume(0.0);
+  }
+
+  @override
+  void dispose() {
+    _videoController?.dispose();
+    super.dispose();
+  }
 
   Future<void> _launchMaps() async {
     if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
@@ -82,32 +100,89 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                         bottom: Radius.circular(32),
                       ),
                       child: PageView.builder(
-                        itemCount: foto.length,
+                        itemCount: media.length,
                         onPageChanged: (index) {
                           setState(() {
                             _currentPage = index;
+                            // Auto play video only when on last page
+                            if (index == media.length - 1) {
+                              if (_videoController != null && _videoController!.value.isInitialized) {
+                                _videoController!.play();
+                              }
+                            } else {
+                              if (_videoController != null && _videoController!.value.isInitialized) {
+                                _videoController!.pause();
+                              }
+                            }
                           });
                         },
                         itemBuilder: (context, index) {
-                          return Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              Image.asset(foto[index], fit: BoxFit.cover),
-                              Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.black.withOpacity(0.15),
-                                      Colors.transparent,
-                                      Colors.black.withOpacity(0.35),
-                                    ],
+                          final item = media[index];
+                          if (item['type'] == 'image') {
+                            return Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Image.asset(
+                                  item['path']!,
+                                  fit: BoxFit.cover,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.black.withOpacity(0.15),
+                                        Colors.transparent,
+                                        Colors.black.withOpacity(0.35),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
+                              ],
+                            );
+                          } else if (item['type'] == 'video') {
+                            if (_videoController != null && _videoController!.value.isInitialized) {
+                              return Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  AspectRatio(
+                                    aspectRatio: _videoController!.value.aspectRatio,
+                                    child: VideoPlayer(_videoController!),
+                                  ),
+                                  // Tombol play/pause di tengah bawah
+                                  Positioned(
+                                    bottom: 20,
+                                    left: 0,
+                                    right: 0,
+                                    child: Center(
+                                      child: IconButton(
+                                        icon: Icon(
+                                          _videoController!.value.isPlaying
+                                              ? Icons.pause_circle_filled
+                                              : Icons.play_circle_filled,
+                                          color: Colors.white,
+                                          size: 48,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            if (_videoController!.value.isPlaying) {
+                                              _videoController!.pause();
+                                            } else {
+                                              _videoController!.play();
+                                            }
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                          }
+                          return Container();
                         },
                       ),
                     ),
@@ -158,20 +233,38 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
                       right: 0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(foto.length, (index) {
-                          return AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            width: _currentPage == index ? 22 : 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color:
-                                  _currentPage == index
-                                      ? const Color(0xFFF5A94D)
-                                      : Colors.white.withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          );
+                        children: List.generate(media.length, (index) {
+                          final item = media[index];
+                          if (item['type'] == 'image') {
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              width: _currentPage == index ? 22 : 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color:
+                                    _currentPage == index
+                                        ? const Color(0xFFF5A94D)
+                                        : Colors.white.withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            );
+                          } else if (item['type'] == 'video') {
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              width: _currentPage == index ? 22 : 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color:
+                                    _currentPage == index
+                                        ? const Color(0xFFF5A94D)
+                                        : Colors.white.withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            );
+                          }
+                          return Container(); // Should not happen
                         }),
                       ),
                     ),
@@ -401,6 +494,45 @@ class _DetailUlunDanuBeratanPageState extends State<DetailUlunDanuBeratanPage> {
         ),
       ),
     );
+  }
+}
+
+class _VideoPlayerWidget extends StatefulWidget {
+  final VideoPlayerController videoController;
+
+  const _VideoPlayerWidget({required this.videoController});
+
+  @override
+  State<_VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
+}
+
+class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
+  @override
+  void initState() {
+    super.initState();
+    widget.videoController.addListener(() {
+      if (widget.videoController.value.isInitialized) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.videoController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.videoController.value.isInitialized
+        ? AspectRatio(
+            aspectRatio: widget.videoController.value.aspectRatio,
+            child: VideoPlayer(widget.videoController),
+          )
+        : const Center(
+            child: CircularProgressIndicator(),
+          );
   }
 }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:video_player/video_player.dart';
 import '../models/detailwisatamodel.dart';
 import 'event_list_page.dart';
 import 'reservation_form_page.dart';
@@ -16,13 +17,32 @@ class DetailUbudPage extends StatefulWidget {
 class _DetailUbudPageState extends State<DetailUbudPage> {
   int _currentPage = 0;
   bool _isBookmarked = false;
+  VideoPlayerController? _videoController;
   final String googleMapsUrl =
-      'https://www.google.com/maps/place/Ubud,+Kecamatan+Ubud,+Kabupaten+Gianyar,+Bali/@-8.4961106,115.2453969,14z/data=!3m1!4b1!4m6!3m5!1s0x2dd23d739f22c9c3:0x54a38afd6b773d1c!8m2!3d-8.5068536!4d115.2624778!16zL20vMDRuMDk5?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
-  final List<String> foto = [
-    'images/ubud.jpg',
-    'images/ubud2.jpg',
-    'images/ubud3.jpg',
+      'https://www.google.com/maps/place/Ubud/@-8.506,115.262,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd2470b0b0b0b0b:0x0b0b0b0b0b0b0b0b!8m2!3d-8.506!4d115.264!16s%2Fg%2F11c4w2w2w2';
+  final List<Map<String, String>> media = [
+    {'type': 'image', 'path': 'images/ubud.jpg'},
+    {'type': 'image', 'path': 'images/ubud2.jpg'},
+    {'type': 'image', 'path': 'images/ubud3.jpg'},
+    {'type': 'video', 'path': 'assets/video/Ubud_fix.mp4'},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _videoController = VideoPlayerController.asset('assets/video/Ubud_fix.mp4')
+      ..initialize().then((_) {
+        setState(() {});
+      });
+    _videoController?.setLooping(true);
+    _videoController?.setVolume(0.0);
+  }
+
+  @override
+  void dispose() {
+    _videoController?.dispose();
+    super.dispose();
+  }
 
   Future<void> _launchMaps() async {
     if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
@@ -80,35 +100,89 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                       borderRadius: const BorderRadius.vertical(
                           bottom: Radius.circular(32)),
                       child: PageView.builder(
-                        itemCount: foto.length,
+                        itemCount: media.length,
                         onPageChanged: (index) {
                           setState(() {
                             _currentPage = index;
+                            // Auto play video only when on last page
+                            if (index == media.length - 1) {
+                              if (_videoController != null && _videoController!.value.isInitialized) {
+                                _videoController!.play();
+                              }
+                            } else {
+                              if (_videoController != null && _videoController!.value.isInitialized) {
+                                _videoController!.pause();
+                              }
+                            }
                           });
                         },
                         itemBuilder: (context, index) {
-                          return Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              Image.asset(
-                                foto[index],
-                                fit: BoxFit.cover,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.black.withOpacity(0.15),
-                                      Colors.transparent,
-                                      Colors.black.withOpacity(0.35),
-                                    ],
+                          final item = media[index];
+                          if (item['type'] == 'image') {
+                            return Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Image.asset(
+                                  item['path']!,
+                                  fit: BoxFit.cover,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.black.withOpacity(0.15),
+                                        Colors.transparent,
+                                        Colors.black.withOpacity(0.35),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
+                              ],
+                            );
+                          } else if (item['type'] == 'video') {
+                            if (_videoController != null && _videoController!.value.isInitialized) {
+                              return Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  AspectRatio(
+                                    aspectRatio: _videoController!.value.aspectRatio,
+                                    child: VideoPlayer(_videoController!),
+                                  ),
+                                  // Tombol play/pause di tengah bawah
+                                  Positioned(
+                                    bottom: 20,
+                                    left: 0,
+                                    right: 0,
+                                    child: Center(
+                                      child: IconButton(
+                                        icon: Icon(
+                                          _videoController!.value.isPlaying
+                                              ? Icons.pause_circle_filled
+                                              : Icons.play_circle_filled,
+                                          color: Colors.white,
+                                          size: 48,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            if (_videoController!.value.isPlaying) {
+                                              _videoController!.pause();
+                                            } else {
+                                              _videoController!.play();
+                                            }
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                          }
+                          return Container();
                         },
                       ),
                     ),
@@ -155,19 +229,36 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                       right: 0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(foto.length, (index) {
-                          return AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            width: _currentPage == index ? 22 : 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: _currentPage == index
-                                  ? const Color(0xFFF5A94D)
-                                  : Colors.white.withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          );
+                        children: List.generate(media.length, (index) {
+                          final item = media[index];
+                          if (item['type'] == 'image') {
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              width: _currentPage == index ? 22 : 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: _currentPage == index
+                                    ? const Color(0xFFF5A94D)
+                                    : Colors.white.withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            );
+                          } else if (item['type'] == 'video') {
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              width: _currentPage == index ? 22 : 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: _currentPage == index
+                                    ? const Color(0xFFF5A94D)
+                                    : Colors.white.withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            );
+                          }
+                          return Container(); // Should not happen
                         }),
                       ),
                     ),
@@ -386,6 +477,66 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _VideoPlayerWidget extends StatefulWidget {
+  final VideoPlayerController videoController;
+
+  const _VideoPlayerWidget({required this.videoController});
+
+  @override
+  State<_VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
+}
+
+class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
+  @override
+  void initState() {
+    super.initState();
+    widget.videoController.addListener(() {
+      if (widget.videoController.value.isPlaying) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.videoController.removeListener(() {});
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        VideoPlayer(widget.videoController),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Center(
+            child: IconButton(
+              icon: Icon(
+                widget.videoController.value.isPlaying
+                    ? Icons.pause
+                    : Icons.play_arrow,
+                color: Colors.white,
+                size: 60,
+              ),
+              onPressed: () {
+                setState(() {
+                  widget.videoController.value.isPlaying
+                      ? widget.videoController.pause()
+                      : widget.videoController.play();
+                });
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

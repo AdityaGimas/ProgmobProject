@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:video_player/video_player.dart';
 import '../models/detailwisatamodel.dart';
 import 'event_list_page.dart';
 import 'reservation_form_page.dart';
 
 class DetailTegalalangPage extends StatefulWidget {
   final Wisata wisata;
-  const DetailTegalalangPage({Key? key, required this.wisata})
-      : super(key: key);
+  const DetailTegalalangPage({Key? key, required this.wisata}) : super(key: key);
 
   @override
   State<DetailTegalalangPage> createState() => _DetailTegalalangPageState();
@@ -17,13 +17,32 @@ class DetailTegalalangPage extends StatefulWidget {
 class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
   int _currentPage = 0;
   bool _isBookmarked = false;
+  VideoPlayerController? _videoController;
   final String googleMapsUrl =
-      'https://www.google.com/maps/place/Tegallalang+Rice+Terrace/@-8.4317112,115.2767227,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd2220b23f900e3:0x8d1a8969386c04ed!8m2!3d-8.4317112!4d115.279303!16s%2Fm%2F0kcf42x?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
-  final List<String> foto = [
-    'images/tegalalang.jpg',
-    'images/tegalalang2.jpg',
-    'images/tegalalang3.jpg',
+      'https://www.google.com/maps/place/Tegalalang+Rice+Terrace/@-8.435,115.279,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd2470b0b0b0b0b:0x0b0b0b0b0b0b0b0b!8m2!3d-8.435!4d115.281!16s%2Fg%2F11c4w2w2w2';
+  final List<Map<String, String>> media = [
+    {'type': 'image', 'path': 'images/tegalalang.jpg'},
+    {'type': 'image', 'path': 'images/tegalalang2.jpg'},
+    {'type': 'image', 'path': 'images/tegalalang3.jpg'},
+    {'type': 'video', 'path': 'assets/video/Sawah_terasering_fix.mp4'},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _videoController = VideoPlayerController.asset('assets/video/Sawah_terasering_fix.mp4')
+      ..initialize().then((_) {
+        setState(() {});
+      });
+    _videoController?.setLooping(true);
+    _videoController?.setVolume(0.0);
+  }
+
+  @override
+  void dispose() {
+    _videoController?.dispose();
+    super.dispose();
+  }
 
   Future<void> _launchMaps() async {
     if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
@@ -81,35 +100,89 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                       borderRadius: const BorderRadius.vertical(
                           bottom: Radius.circular(32)),
                       child: PageView.builder(
-                        itemCount: foto.length,
+                        itemCount: media.length,
                         onPageChanged: (index) {
                           setState(() {
                             _currentPage = index;
+                            // Auto play video only when on last page
+                            if (index == media.length - 1) {
+                              if (_videoController != null && _videoController!.value.isInitialized) {
+                                _videoController!.play();
+                              }
+                            } else {
+                              if (_videoController != null && _videoController!.value.isInitialized) {
+                                _videoController!.pause();
+                              }
+                            }
                           });
                         },
                         itemBuilder: (context, index) {
-                          return Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              Image.asset(
-                                foto[index],
-                                fit: BoxFit.cover,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.black.withOpacity(0.15),
-                                      Colors.transparent,
-                                      Colors.black.withOpacity(0.35),
-                                    ],
+                          final item = media[index];
+                          if (item['type'] == 'image') {
+                            return Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Image.asset(
+                                  item['path']!,
+                                  fit: BoxFit.cover,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.black.withOpacity(0.15),
+                                        Colors.transparent,
+                                        Colors.black.withOpacity(0.35),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
+                              ],
+                            );
+                          } else if (item['type'] == 'video') {
+                            if (_videoController != null && _videoController!.value.isInitialized) {
+                              return Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  AspectRatio(
+                                    aspectRatio: _videoController!.value.aspectRatio,
+                                    child: VideoPlayer(_videoController!),
+                                  ),
+                                  // Tombol play/pause di tengah bawah
+                                  Positioned(
+                                    bottom: 20,
+                                    left: 0,
+                                    right: 0,
+                                    child: Center(
+                                      child: IconButton(
+                                        icon: Icon(
+                                          _videoController!.value.isPlaying
+                                              ? Icons.pause_circle_filled
+                                              : Icons.play_circle_filled,
+                                          color: Colors.white,
+                                          size: 48,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            if (_videoController!.value.isPlaying) {
+                                              _videoController!.pause();
+                                            } else {
+                                              _videoController!.play();
+                                            }
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                          }
+                          return Container();
                         },
                       ),
                     ),
@@ -158,7 +231,7 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                       right: 0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(foto.length, (index) {
+                        children: List.generate(media.length, (index) {
                           return AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -389,6 +462,68 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _VideoPlayerWidget extends StatefulWidget {
+  final VideoPlayerController videoController;
+
+  const _VideoPlayerWidget({required this.videoController});
+
+  @override
+  State<_VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
+}
+
+class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
+  @override
+  void initState() {
+    super.initState();
+    widget.videoController.addListener(() {
+      if (widget.videoController.value.isPlaying) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.videoController.removeListener(() {});
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        VideoPlayer(widget.videoController),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            color: Colors.black.withOpacity(0.5),
+            child: Center(
+              child: IconButton(
+                icon: Icon(
+                  widget.videoController.value.isPlaying
+                      ? Icons.pause
+                      : Icons.play_arrow,
+                  color: Colors.white,
+                  size: 60,
+                ),
+                onPressed: () {
+                  setState(() {
+                    widget.videoController.value.isPlaying
+                        ? widget.videoController.pause()
+                        : widget.videoController.play();
+                  });
+                },
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

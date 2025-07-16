@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:video_player/video_player.dart';
 import '../models/detailwisatamodel.dart';
 import 'event_list_page.dart';
 import 'reservation_form_page.dart';
 
 class DetailKelingkingPage extends StatefulWidget {
   final Wisata wisata;
-  const DetailKelingkingPage({Key? key, required this.wisata})
-      : super(key: key);
+  const DetailKelingkingPage({Key? key, required this.wisata}) : super(key: key);
 
   @override
   State<DetailKelingkingPage> createState() => _DetailKelingkingPageState();
@@ -17,21 +17,42 @@ class DetailKelingkingPage extends StatefulWidget {
 class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
   int _currentPage = 0;
   bool _isBookmarked = false;
+  VideoPlayerController? _videoController;
   final String googleMapsUrl =
-      'https://www.google.com/maps/place/Kelingking+Beach+Nusa+Penida+Bali/@-8.7554547,115.4638441,15.33z/data=!4m6!3m5!1s0x2dd23d002b5349f5:0xc0e02ba4763d1f03!8m2!3d-8.752828!4d115.4723607!16s%2Fg%2F11y4yfz5wk?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
-  final List<String> fotoDestinasi = [
-    'images/kelingking.jpg',
-    'images/kelingking2.jpg',
-    'images/kelingking3.jpg',
+      'https://www.google.com/maps/place/Kelingking+Beach/@-8.732866,115.456246,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd1f7e2e2e2e2e2:0x2e2e2e2e2e2e2e2e!8m2!3d-8.732866!4d115.458434!16s%2Fg%2F11c4w2w2w2';
+  final List<Map<String, String>> media = [
+    {'type': 'image', 'path': 'images/kelingking.jpg'},
+    {'type': 'image', 'path': 'images/kelingking2.jpg'},
+    {'type': 'image', 'path': 'images/kelingking3.jpg'},
+    {'type': 'video', 'path': 'assets/video/Kelingking_fix.mp4'},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _videoController = VideoPlayerController.asset('assets/video/Kelingking_fix.mp4')
+      ..initialize().then((_) {
+        setState(() {});
+      });
+    _videoController?.setLooping(true);
+    _videoController?.setVolume(0.0);
+  }
+
+  @override
+  void dispose() {
+    _videoController?.dispose();
+    super.dispose();
+  }
 
   Future<void> _launchMaps() async {
     if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
-      await launchUrl(Uri.parse(googleMapsUrl),
-          mode: LaunchMode.externalApplication);
+      await launchUrl(
+        Uri.parse(googleMapsUrl),
+        mode: LaunchMode.externalApplication,
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Tidak dapat membuka Google Maps')),
+        const SnackBar(content: Text('Gagal membuka Google Maps')),
       );
     }
   }
@@ -39,16 +60,15 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
   void _shareInfo() {
     Share.share(
       'Yuk kunjungi Pantai Kelingking di Nusa Penida!\n'
-      'Jam buka: 24 Jam\n'
-      'Pantai dengan tebing berbentuk T-Rex dan pasir putih bersih. Spot foto ikonik Nusa Penida dengan panorama laut biru yang memukau.\n'
+      'Jam buka: 06:00 - 18:00\n'
+      'Pantai dengan tebing ikonik berbentuk T-Rex, pasir putih, dan pemandangan laut biru yang menakjubkan.\n'
       'Lokasi: $googleMapsUrl',
-      subject: 'Rekomendasi Wisata Bali - Pantai Kelingking',
+      subject: 'Rekomendasi Wisata Bali - Kelingking',
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: const Color(0xFFF9E8D9),
       floatingActionButton: SizedBox(
@@ -57,14 +77,11 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
         child: FloatingActionButton(
           onPressed: _shareInfo,
           backgroundColor: const Color(0xFFF5A94D),
-          child: const Icon(
-            Icons.share,
-            color: Colors.white,
-            size: 20,
-          ),
+          child: const Icon(Icons.share, color: Colors.white, size: 20),
           elevation: 6,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
         ),
       ),
       body: SafeArea(
@@ -72,7 +89,6 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Carousel gambar (ikut scroll)
               SizedBox(
                 height: 300,
                 width: double.infinity,
@@ -80,37 +96,82 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                   children: [
                     ClipRRect(
                       borderRadius: const BorderRadius.vertical(
-                          bottom: Radius.circular(32)),
+                        bottom: Radius.circular(32),
+                      ),
                       child: PageView.builder(
-                        itemCount: fotoDestinasi.length,
+                        itemCount: media.length,
                         onPageChanged: (index) {
                           setState(() {
                             _currentPage = index;
+                            if (index == media.length - 1) {
+                              if (_videoController != null && _videoController!.value.isInitialized) {
+                                _videoController!.play();
+                              }
+                            } else {
+                              if (_videoController != null && _videoController!.value.isInitialized) {
+                                _videoController!.pause();
+                              }
+                            }
                           });
                         },
                         itemBuilder: (context, index) {
-                          return Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              Image.asset(
-                                fotoDestinasi[index],
-                                fit: BoxFit.cover,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.black.withOpacity(0.15),
-                                      Colors.transparent,
-                                      Colors.black.withOpacity(0.35),
-                                    ],
+                          if (media[index]['type'] == 'image') {
+                            return Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Image.asset(media[index]['path']!, fit: BoxFit.cover),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.black.withOpacity(0.15),
+                                        Colors.transparent,
+                                        Colors.black.withOpacity(0.35),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
+                              ],
+                            );
+                          } else if (media[index]['type'] == 'video') {
+                            if (_videoController != null && _videoController!.value.isInitialized) {
+                              return Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  AspectRatio(
+                                    aspectRatio: _videoController!.value.aspectRatio,
+                                    child: VideoPlayer(_videoController!),
+                                  ),
+                                  Positioned(
+                                    bottom: 20,
+                                    child: IconButton(
+                                      icon: Icon(
+                                        _videoController!.value.isPlaying
+                                            ? Icons.pause_circle_filled
+                                            : Icons.play_circle_filled,
+                                        color: Colors.white,
+                                        size: 48,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          if (_videoController!.value.isPlaying) {
+                                            _videoController!.pause();
+                                          } else {
+                                            _videoController!.play();
+                                          }
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                          }
+                          return const SizedBox();
                         },
                       ),
                     ),
@@ -120,8 +181,10 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                       child: CircleAvatar(
                         backgroundColor: Colors.white.withOpacity(0.85),
                         child: IconButton(
-                          icon: const Icon(Icons.arrow_back,
-                              color: Color(0xFF2F2F2F)),
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Color(0xFF2F2F2F),
+                          ),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ),
@@ -136,18 +199,20 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                             _isBookmarked
                                 ? Icons.bookmark
                                 : Icons.bookmark_border,
-                            color: _isBookmarked
-                                ? Color(0xFFF5A94D)
-                                : Color(0xFF2F2F2F),
+                            color:
+                                _isBookmarked
+                                    ? Color(0xFFF5A94D)
+                                    : Color(0xFF2F2F2F),
                           ),
                           onPressed: () {
                             setState(() {
                               _isBookmarked = !_isBookmarked;
                             });
                           },
-                          tooltip: _isBookmarked
-                              ? 'Hapus Bookmark'
-                              : 'Tambah Bookmark',
+                          tooltip:
+                              _isBookmarked
+                                  ? 'Hapus Bookmark'
+                                  : 'Tambah Bookmark',
                         ),
                       ),
                     ),
@@ -157,16 +222,17 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                       right: 0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(fotoDestinasi.length, (index) {
+                        children: List.generate(media.length, (index) {
                           return AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             margin: const EdgeInsets.symmetric(horizontal: 4),
                             width: _currentPage == index ? 22 : 8,
                             height: 8,
                             decoration: BoxDecoration(
-                              color: _currentPage == index
-                                  ? const Color(0xFFF5A94D)
-                                  : Colors.white.withOpacity(0.8),
+                              color:
+                                  _currentPage == index
+                                      ? const Color(0xFFF5A94D)
+                                      : Colors.white.withOpacity(0.8),
                               borderRadius: BorderRadius.circular(8),
                             ),
                           );
@@ -176,10 +242,11 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                   ],
                 ),
               ),
-              // Konten detail (ikut scroll)
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 20,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -192,37 +259,49 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                       margin: const EdgeInsets.only(bottom: 20),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 18),
+                          horizontal: 20,
+                          vertical: 18,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Pantai Kelingking",
-                              style: theme.textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF2F2F2F),
+                              widget.wisata.nama,
+                              style: const TextStyle(
                                 fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2F2F2F),
                               ),
                             ),
                             const SizedBox(height: 8),
                             Row(
                               children: [
-                                const Icon(Icons.place,
-                                    color: Color(0xFFF5A94D), size: 20),
+                                const Icon(
+                                  Icons.place,
+                                  color: Color(0xFFF5A94D),
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 4),
-                                const Text(
-                                  "Nusa Penida, Klungkung",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Color(0xFF6D6D6D)),
+                                Text(
+                                  widget.wisata.lokasi,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Color(0xFF6D6D6D),
+                                  ),
                                 ),
                                 const Spacer(),
-                                const Icon(Icons.access_time,
-                                    color: Color(0xFFF5A94D), size: 20),
+                                const Icon(
+                                  Icons.access_time,
+                                  color: Color(0xFFF5A94D),
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 4),
                                 const Text(
-                                  "24 Jam",
+                                  "06:00 - 18:00",
                                   style: TextStyle(
-                                      fontSize: 16, color: Color(0xFF6D6D6D)),
+                                    fontSize: 16,
+                                    color: Color(0xFF6D6D6D),
+                                  ),
                                 ),
                               ],
                             ),
@@ -244,7 +323,7 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                       ),
                       padding: const EdgeInsets.all(20),
                       child: const Text(
-                        "Pantai dengan tebing kapur berbentuk kepala dinosaurus T-Rex yang ikonik. Turun 500 anak tangga untuk sampai ke pantai dengan pasir putih dan air laut biru kehijauan. Spot foto favorit para influencer.",
+                        "Pantai Kelingking adalah destinasi wisata terkenal di Nusa Penida dengan tebing berbentuk T-Rex, pasir putih, dan air laut biru jernih. Tempat ini menawarkan pemandangan spektakuler dari atas tebing dan pengalaman trekking yang menantang menuju pantai.",
                         style: TextStyle(
                           fontSize: 16,
                           color: Color(0xFF2F2F2F),
@@ -252,7 +331,7 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                         ),
                       ),
                     ),
-                   const SizedBox(height: 32),
+                    const SizedBox(height: 32),
                     Row(
                       children: [
                         Expanded(
@@ -317,7 +396,6 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        // Tombol Reservasi
                         Expanded(
                           child: ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
@@ -359,9 +437,9 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                     const SizedBox(height: 24),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
+                      children: const [
                         _InfoIcon(
-                          icon: Icons.terrain_rounded,
+                          icon: Icons.landscape_rounded,
                           label: "Tebing",
                           color: Colors.brown,
                         ),
@@ -371,9 +449,9 @@ class _DetailKelingkingPageState extends State<DetailKelingkingPage> {
                           color: Colors.blue,
                         ),
                         _InfoIcon(
-                          icon: Icons.photo_camera_back_rounded,
-                          label: "Foto",
-                          color: Colors.purple,
+                          icon: Icons.terrain_rounded,
+                          label: "Trekking",
+                          color: Colors.green,
                         ),
                       ],
                     ),

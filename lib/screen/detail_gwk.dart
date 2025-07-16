@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:video_player/video_player.dart';
 import '../models/detailwisatamodel.dart';
 import 'event_list_page.dart';
 import 'reservation_form_page.dart';
@@ -16,13 +17,32 @@ class DetailGWKPage extends StatefulWidget {
 class _DetailGWKPageState extends State<DetailGWKPage> {
   int _currentPage = 0;
   bool _isBookmarked = false;
+  VideoPlayerController? _videoController;
   final String googleMapsUrl =
       'https://www.google.com/maps/place/Taman+Budaya+Garuda+Wisnu+Kencana/@-8.8104228,115.1650183,16z/data=!3m1!4b1!4m6!3m5!1s0x2dd244cf54e1dec7:0x1988663e064f5a51!8m2!3d-8.8104228!4d115.1675986!16zL20vMGRyenpx?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
-  final List<String> foto = [
-    'images/gwk.jpg',
-    'images/gwk2.jpg',
-    'images/gwk3.jpg',
+  final List<Map<String, String>> media = [
+    {'type': 'image', 'path': 'images/gwk.jpg'},
+    {'type': 'image', 'path': 'images/gwk2.jpg'},
+    {'type': 'image', 'path': 'images/gwk3.jpg'},
+    {'type': 'video', 'path': 'assets/video/GWK_fix.mp4'},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _videoController = VideoPlayerController.asset('assets/video/GWK_fix.mp4')
+      ..initialize().then((_) {
+        setState(() {});
+      });
+    _videoController?.setLooping(true);
+    _videoController?.setVolume(0.0);
+  }
+
+  @override
+  void dispose() {
+    _videoController?.dispose();
+    super.dispose();
+  }
 
   Future<void> _launchMaps() async {
     if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
@@ -79,32 +99,80 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                         bottom: Radius.circular(32),
                       ),
                       child: PageView.builder(
-                        itemCount: foto.length,
+                        itemCount: media.length,
                         onPageChanged: (index) {
                           setState(() {
                             _currentPage = index;
+                            // Auto play video only when on last page
+                            if (index == media.length - 1) {
+                              if (_videoController != null && _videoController!.value.isInitialized) {
+                                _videoController!.play();
+                              }
+                            } else {
+                              if (_videoController != null && _videoController!.value.isInitialized) {
+                                _videoController!.pause();
+                              }
+                            }
                           });
                         },
                         itemBuilder: (context, index) {
-                          return Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              Image.asset(foto[index], fit: BoxFit.cover),
-                              Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.black.withOpacity(0.15),
-                                      Colors.transparent,
-                                      Colors.black.withOpacity(0.35),
-                                    ],
+                          if (media[index]['type'] == 'image') {
+                            return Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Image.asset(media[index]['path']!, fit: BoxFit.cover),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.black.withOpacity(0.15),
+                                        Colors.transparent,
+                                        Colors.black.withOpacity(0.35),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
+                              ],
+                            );
+                          } else if (media[index]['type'] == 'video') {
+                            if (_videoController != null && _videoController!.value.isInitialized) {
+                              return Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  AspectRatio(
+                                    aspectRatio: _videoController!.value.aspectRatio,
+                                    child: VideoPlayer(_videoController!),
+                                  ),
+                                  Positioned(
+                                    bottom: 20,
+                                    child: IconButton(
+                                      icon: Icon(
+                                        _videoController!.value.isPlaying
+                                            ? Icons.pause_circle_filled
+                                            : Icons.play_circle_filled,
+                                        color: Colors.white,
+                                        size: 48,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          if (_videoController!.value.isPlaying) {
+                                            _videoController!.pause();
+                                          } else {
+                                            _videoController!.play();
+                                          }
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                          }
+                          return const SizedBox();
                         },
                       ),
                     ),
@@ -156,7 +224,7 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                       right: 0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(foto.length, (index) {
+                        children: List.generate(media.length, (index) {
                           return AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             margin: const EdgeInsets.symmetric(horizontal: 4),

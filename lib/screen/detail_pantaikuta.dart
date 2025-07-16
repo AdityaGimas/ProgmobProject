@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:video_player/video_player.dart';
 import '../models/detailwisatamodel.dart';
 import 'event_list_page.dart';
 import 'reservation_form_page.dart';
 
 class DetailPantaiKutaPage extends StatefulWidget {
   final Wisata wisata;
-  const DetailPantaiKutaPage({Key? key, required this.wisata})
-      : super(key: key);
+  const DetailPantaiKutaPage({Key? key, required this.wisata}) : super(key: key);
 
   @override
   State<DetailPantaiKutaPage> createState() => _DetailPantaiKutaPageState();
@@ -17,13 +17,32 @@ class DetailPantaiKutaPage extends StatefulWidget {
 class _DetailPantaiKutaPageState extends State<DetailPantaiKutaPage> {
   int _currentPage = 0;
   bool _isBookmarked = false;
+  VideoPlayerController? _videoController;
   final String googleMapsUrl =
-      'https://www.google.com/maps/place/Pantai+Kuta/@-8.7180324,115.1577133,15z/data=!3m1!4b1!4m6!3m5!1s0x2dd246bc2ab70d43:0x82feaae12f4ab48e!8m2!3d-8.7184926!4d115.1686322!16s%2Fg%2F11c1p6r11n?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
-  final List<String> foto = [
-    'images/kuta.jpg',
-    'images/kuta2.jpg',
-    'images/kuta3.jpg',
+      'https://www.google.com/maps/place/Kuta+Beach/@-8.717761,115.168236,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd2470b0b0b0b0b:0x0b0b0b0b0b0b0b0b!8m2!3d-8.717761!4d115.170424!16s%2Fg%2F11c4w2w2w2';
+  final List<Map<String, String>> media = [
+    {'type': 'image', 'path': 'images/kuta.jpg'},
+    {'type': 'image', 'path': 'images/kuta2.jpg'},
+    {'type': 'image', 'path': 'images/kuta3.jpg'},
+    {'type': 'video', 'path': 'assets/video/Kuta_fix.mp4'},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _videoController = VideoPlayerController.asset('assets/video/Kuta_fix.mp4')
+      ..initialize().then((_) {
+        setState(() {});
+      });
+    _videoController?.setLooping(true);
+    _videoController?.setVolume(0.0);
+  }
+
+  @override
+  void dispose() {
+    _videoController?.dispose();
+    super.dispose();
+  }
 
   Future<void> _launchMaps() async {
     if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
@@ -81,35 +100,89 @@ class _DetailPantaiKutaPageState extends State<DetailPantaiKutaPage> {
                       borderRadius: const BorderRadius.vertical(
                           bottom: Radius.circular(32)),
                       child: PageView.builder(
-                        itemCount: foto.length,
+                        itemCount: media.length,
                         onPageChanged: (index) {
                           setState(() {
                             _currentPage = index;
+                            // Auto play video only when on last page
+                            if (index == media.length - 1) {
+                              if (_videoController != null && _videoController!.value.isInitialized) {
+                                _videoController!.play();
+                              }
+                            } else {
+                              if (_videoController != null && _videoController!.value.isInitialized) {
+                                _videoController!.pause();
+                              }
+                            }
                           });
                         },
                         itemBuilder: (context, index) {
-                          return Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              Image.asset(
-                                foto[index],
-                                fit: BoxFit.cover,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.black.withOpacity(0.15),
-                                      Colors.transparent,
-                                      Colors.black.withOpacity(0.35),
-                                    ],
+                          final item = media[index];
+                          if (item['type'] == 'image') {
+                            return Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Image.asset(
+                                  item['path']!,
+                                  fit: BoxFit.cover,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.black.withOpacity(0.15),
+                                        Colors.transparent,
+                                        Colors.black.withOpacity(0.35),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
+                              ],
+                            );
+                          } else if (item['type'] == 'video') {
+                            if (_videoController != null && _videoController!.value.isInitialized) {
+                              return Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  AspectRatio(
+                                    aspectRatio: _videoController!.value.aspectRatio,
+                                    child: VideoPlayer(_videoController!),
+                                  ),
+                                  // Tombol play/pause di tengah bawah
+                                  Positioned(
+                                    bottom: 20,
+                                    left: 0,
+                                    right: 0,
+                                    child: Center(
+                                      child: IconButton(
+                                        icon: Icon(
+                                          _videoController!.value.isPlaying
+                                              ? Icons.pause_circle_filled
+                                              : Icons.play_circle_filled,
+                                          color: Colors.white,
+                                          size: 48,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            if (_videoController!.value.isPlaying) {
+                                              _videoController!.pause();
+                                            } else {
+                                              _videoController!.play();
+                                            }
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                          }
+                          return Container();
                         },
                       ),
                     ),
@@ -156,19 +229,36 @@ class _DetailPantaiKutaPageState extends State<DetailPantaiKutaPage> {
                       right: 0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(foto.length, (index) {
-                          return AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            width: _currentPage == index ? 22 : 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: _currentPage == index
-                                  ? const Color(0xFFF5A94D)
-                                  : Colors.white.withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          );
+                        children: List.generate(media.length, (index) {
+                          final item = media[index];
+                          if (item['type'] == 'image') {
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              width: _currentPage == index ? 22 : 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: _currentPage == index
+                                    ? const Color(0xFFF5A94D)
+                                    : Colors.white.withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            );
+                          } else if (item['type'] == 'video') {
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              width: _currentPage == index ? 22 : 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: _currentPage == index
+                                    ? const Color(0xFFF5A94D)
+                                    : Colors.white.withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            );
+                          }
+                          return Container(); // Should not happen
                         }),
                       ),
                     ),
@@ -386,6 +476,116 @@ class _DetailPantaiKutaPageState extends State<DetailPantaiKutaPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _VideoPlayerWidget extends StatefulWidget {
+  final VideoPlayerController videoController;
+
+  const _VideoPlayerWidget({required this.videoController});
+
+  @override
+  State<_VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
+}
+
+class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
+  @override
+  void initState() {
+    super.initState();
+    widget.videoController.addListener(() {
+      if (widget.videoController.value.isPlaying) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.videoController.removeListener(() {});
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        VideoPlayer(widget.videoController),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Center(
+            child: _VideoProgressIndicator(
+              videoController: widget.videoController,
+            ),
+          ),
+        ),
+        Positioned(
+          top: 20,
+          right: 20,
+          child: CircleAvatar(
+            backgroundColor: Colors.black.withOpacity(0.5),
+            child: IconButton(
+              icon: Icon(
+                widget.videoController.value.isPlaying
+                    ? Icons.pause
+                    : Icons.play_arrow,
+                color: Colors.white,
+                size: 30,
+              ),
+              onPressed: () {
+                setState(() {
+                  widget.videoController.value.isPlaying
+                      ? widget.videoController.pause()
+                      : widget.videoController.play();
+                });
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _VideoProgressIndicator extends StatefulWidget {
+  final VideoPlayerController videoController;
+
+  const _VideoProgressIndicator({required this.videoController});
+
+  @override
+  State<_VideoProgressIndicator> createState() => _VideoProgressIndicatorState();
+}
+
+class _VideoProgressIndicatorState extends State<_VideoProgressIndicator> {
+  @override
+  void initState() {
+    super.initState();
+    widget.videoController.addListener(() {
+      if (widget.videoController.value.isPlaying) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.videoController.removeListener(() {});
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return VideoProgressIndicator(
+      widget.videoController,
+      allowScrubbing: true,
+      colors: VideoProgressColors(
+        playedColor: const Color(0xFFF5A94D),
+        bufferedColor: Colors.white,
+        backgroundColor: Colors.white.withOpacity(0.3),
       ),
     );
   }
