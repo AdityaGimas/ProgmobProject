@@ -103,7 +103,7 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                         onPageChanged: (index) {
                           setState(() {
                             _currentPage = index;
-                            // Auto play video only when on last page
+                            // mulai vid otomatis
                             if (index == media.length - 1) {
                               if (_videoController != null && _videoController!.value.isInitialized) {
                                 _videoController!.play();
