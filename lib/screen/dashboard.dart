@@ -11,9 +11,10 @@ import 'detail_tegalalang.dart';
 import 'rekomendasi_page.dart';
 
 class DashboardPage extends StatefulWidget {
+  final String email;
   final VoidCallback onLogout;
 
-  const DashboardPage({super.key, required this.onLogout});
+  const DashboardPage({super.key, required this.email, required this.onLogout});
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -28,6 +29,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final headerHeight = height * 0.65;
+    final email = widget.email;
 
     return Scaffold(
       body: SafeArea(
@@ -75,15 +77,15 @@ class _DashboardPageState extends State<DashboardPage> {
                                       );
                                     },
                                     child: Row(
-                                      children: const [
-                                        CircleAvatar(
+                                      children: [
+                                        const CircleAvatar(
                                           radius: 20,
                                           backgroundImage: AssetImage("images/user.png"),
                                         ),
-                                        SizedBox(width: 8),
+                                        const SizedBox(width: 8),
                                         Text(
-                                          'User',
-                                          style: TextStyle(
+                                          email,
+                                          style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
                                             color: Color(0xFF2F2F2F),
@@ -125,134 +127,126 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                 ],
               ),
+
               const SizedBox(height: 32),
+
+              // Section Wisata
               buildSection(
                 "Destinasi Wisata",
                 "Temukan beragam destinasi indah di Bali, mulai dari pantai eksotis hingga pura bersejarah, semua dalam genggaman.",
                 _destinationController,
                 [
-                DestinationCard(
-                  title: "Garuda Wisnu Kencana",
-                  imagePath: "images/gwk.jpeg",
-                  onTap: () {
-                    final wisata = Wisata(
-                      nama: "Garuda Wisnu Kencana",
-                      lokasi: "Ungasan, Badung, Bali",
-                      gambar: "images/gwk.jpeg",
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailGWKPage(wisata: wisata),
-                      ),
-                    );
-                  },
-                ),
-                DestinationCard(
-                  title: "Pantai Kelingking",
-                  imagePath: "images/kelingking2.jpg",
-                  onTap: () {
-                    final wisata = Wisata(
-                      nama: "Pantai Kelingking",
-                      lokasi: "Nusa Penida",
-                      gambar: "images/kelingking.jpg",
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailKelingkingPage(wisata: wisata),
-                      ),
-                    );
-                  },
-                ),
-                DestinationCard(
-                  title: "Pantai Kuta",
-                  imagePath: "images/kuta.jpg",
-                  onTap: () {
-                    final wisata = Wisata(
-                      nama: "Pantai Kuta",
-                      lokasi: "Badung",
-                      gambar: "images/kuta.jpg",
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailPantaiKutaPage(wisata: wisata),
-                      ),
-                    );
-                  },
-                ),
-                DestinationCard(
-                  title: "Tanah Lot",
-                  imagePath: "images/tanahlot.jpg",
-                  onTap: () {
-                    final wisata = Wisata(
-                      nama: "Tanah Lot",
-                      lokasi: "Tabanan",
-                      gambar: "images/tanahlot.jpg",
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailTanahLotPage(wisata: wisata),
-                      ),
-                    );
-                  },
-                ),
-                DestinationCard(
-                  title: "Sawah Terasering Tegalalang",
-                  imagePath: "images/tegalalang.jpg",
-                  onTap: () {
-                    final wisata = Wisata(
-                      nama: "Sawah Terasering Tegalalang",
-                      lokasi: "Gianyar",
-                      gambar: "images/tegalalang.jpg",
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailTegalalangPage(wisata: wisata),
-                      ),
-                    );
-                  },
-                ),
-                DestinationCard(
-                  title: "Ubud",
-                  imagePath: "images/ubud.jpg",
-                  onTap: () {
-                    final wisata = Wisata(
-                      nama: "Ubud",
-                      lokasi: "Gianyar",
-                      gambar: "images/ubud.jpg",
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailUbudPage(wisata: wisata),
-                      ),
-                    );
-                  },
-                ),
-                DestinationCard(
-                  title: "Ulundanu Beratan",
-                  imagePath: "images/ulundanu.jpg",
-                  onTap: () {
-                    final wisata = Wisata(
-                      nama: "Ulun Danu Beratan",
-                      lokasi: "Nusa Penida",
-                      gambar: "images/ulundanu.jpg",
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailUlunDanuPage(wisata: wisata),
-                      ),
-                    );
-                  },
-                ),
-              ]
+                  DestinationCard(
+                    title: "Garuda Wisnu Kencana",
+                    imagePath: "images/gwk.jpeg",
+                    onTap: () {
+                      final wisata = Wisata(
+                        nama: "Garuda Wisnu Kencana",
+                        lokasi: "Ungasan, Badung, Bali",
+                        gambar: "images/gwk.jpeg",
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DetailGWKPage(wisata: wisata)),
+                      );
+                    },
+                  ),
+                  DestinationCard(
+                    title: "Pantai Kelingking",
+                    imagePath: "images/kelingking2.jpg",
+                    onTap: () {
+                      final wisata = Wisata(
+                        nama: "Pantai Kelingking",
+                        lokasi: "Nusa Penida",
+                        gambar: "images/kelingking.jpg",
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DetailKelingkingPage(wisata: wisata)),
+                      );
+                    },
+                  ),
+                  DestinationCard(
+                    title: "Pantai Kuta",
+                    imagePath: "images/kuta.jpg",
+                    onTap: () {
+                      final wisata = Wisata(
+                        nama: "Pantai Kuta",
+                        lokasi: "Badung",
+                        gambar: "images/kuta.jpg",
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DetailPantaiKutaPage(wisata: wisata)),
+                      );
+                    },
+                  ),
+                  DestinationCard(
+                    title: "Tanah Lot",
+                    imagePath: "images/tanahlot.jpg",
+                    onTap: () {
+                      final wisata = Wisata(
+                        nama: "Tanah Lot",
+                        lokasi: "Tabanan",
+                        gambar: "images/tanahlot.jpg",
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DetailTanahLotPage(wisata: wisata)),
+                      );
+                    },
+                  ),
+                  DestinationCard(
+                    title: "Sawah Terasering Tegalalang",
+                    imagePath: "images/tegalalang.jpg",
+                    onTap: () {
+                      final wisata = Wisata(
+                        nama: "Sawah Terasering Tegalalang",
+                        lokasi: "Gianyar",
+                        gambar: "images/tegalalang.jpg",
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DetailTegalalangPage(wisata: wisata)),
+                      );
+                    },
+                  ),
+                  DestinationCard(
+                    title: "Ubud",
+                    imagePath: "images/ubud.jpg",
+                    onTap: () {
+                      final wisata = Wisata(
+                        nama: "Ubud",
+                        lokasi: "Gianyar",
+                        gambar: "images/ubud.jpg",
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DetailUbudPage(wisata: wisata)),
+                      );
+                    },
+                  ),
+                  DestinationCard(
+                    title: "Ulundanu Beratan",
+                    imagePath: "images/ulundanu.jpg",
+                    onTap: () {
+                      final wisata = Wisata(
+                        nama: "Ulun Danu Beratan",
+                        lokasi: "Tabanan",
+                        gambar: "images/ulundanu.jpg",
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DetailUlunDanuPage(wisata: wisata)),
+                      );
+                    },
+                  ),
+                ],
               ),
+
               const SizedBox(height: 32),
+
+              // Section Kuliner
               buildSection(
                 "Kuliner",
                 "Nikmati kelezatan kuliner khas Indonesia yang menggugah selera, dari makanan tradisional hingga hidangan modern. Akses laman kuliner lewat opsi rekomendasi!",
@@ -262,7 +256,10 @@ class _DashboardPageState extends State<DashboardPage> {
                   DestinationCard(title: "Cafe Santai", imagePath: "images/food2.jpeg"),
                 ],
               ),
+
               const SizedBox(height: 32),
+
+              // Section Penginapan
               buildSection(
                 "Penginapan",
                 "Beragam pilihan penginapan nyaman, mulai dari hotel mewah hingga vila eksklusif untuk pengalaman tak terlupakan. Akses laman penginapan lewat opsi rekomendasi!",
@@ -272,6 +269,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   DestinationCard(title: "Pondok Indah", imagePath: "images/hotel2.jpeg"),
                 ],
               ),
+
               const SizedBox(height: 32),
             ],
           ),
@@ -299,7 +297,7 @@ class _DashboardPageState extends State<DashboardPage> {
             );
 
             if (shouldLogout == true) {
-              widget.onLogout(); // Panggil Navigator 2.0 logout
+              widget.onLogout();
             }
           }
         },
@@ -311,7 +309,6 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-
   Widget buildSection(String title, String description, PageController controller, List<Widget> cards) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -320,21 +317,14 @@ class _DashboardPageState extends State<DashboardPage> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Text(
             title,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF2F2F2F),
-            ),
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF2F2F2F)),
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
           child: Text(
             description,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Color(0xFF4B4B4B),
-            ),
+            style: const TextStyle(fontSize: 14, color: Color(0xFF4B4B4B)),
           ),
         ),
         const SizedBox(height: 16),
@@ -348,7 +338,6 @@ class _DashboardPageState extends State<DashboardPage> {
       ],
     );
   }
-
 }
 
 class DestinationCard extends StatelessWidget {
@@ -408,24 +397,12 @@ class DestinationCard extends StatelessWidget {
                       children: const [
                         Icon(Icons.flag, color: Colors.white, size: 14),
                         SizedBox(width: 4),
-                        Text(
-                          "Bali",
-                          style: TextStyle(color: Colors.white),
-                        )
+                        Text("Bali", style: TextStyle(color: Colors.white)),
                       ],
                     ),
                   ],
                 ),
               ),
-              // >>> HAPUS BAGIAN INI UNTUK MENGHILANGKAN TOMBOL PANAH <<<
-    // const Positioned(
-    //   bottom: 16,
-    //   right: 16,
-    //   child: CircleAvatar(
-    //     backgroundColor: Color(0xFFF5A94D),
-    //     child: Icon(Icons.arrow_forward, color: Colors.white),
-    //   ),
-    // )
             ],
           ),
         ),

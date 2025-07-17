@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; 
 import 'routes/app_router_delegate.dart';
+import 'routes/page_manager.dart'; 
 
 void main() {
   runApp(const BaliDestinasiApp());
@@ -10,18 +12,26 @@ class BaliDestinasiApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routerDelegate = AppRouterDelegate();
+    return ChangeNotifierProvider(
+      create: (_) => PageManager(), 
+      child: Builder(
+        builder: (context) {
+          final pageManager = context.read<PageManager>();
+          final routerDelegate = AppRouterDelegate(pageManager);
 
-    return MaterialApp.router(
-      title: 'Bali Destinasi',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'Arial',
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFF5A94D)),
-        useMaterial3: true,
+          return MaterialApp.router(
+            title: 'Bali Destinasi',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              fontFamily: 'Arial',
+              colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFF5A94D)),
+              useMaterial3: true,
+            ),
+            routerDelegate: routerDelegate,
+            routeInformationParser: _NoOpParser(),
+          );
+        },
       ),
-      routerDelegate: routerDelegate,
-      routeInformationParser: _NoOpParser(), 
     );
   }
 }

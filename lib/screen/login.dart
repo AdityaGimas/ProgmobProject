@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../controllers/login_controller.dart';
 
 class LoginPage extends StatefulWidget {
-  final VoidCallback onLoginSuccess;
+  final void Function(String email) onLoginSuccess;
   final VoidCallback onGoToRegister;
 
   const LoginPage({
@@ -99,7 +99,8 @@ class _LoginPageState extends State<LoginPage> {
                                 child: ElevatedButton(
                                   onPressed: () {
                                     if (_formKey.currentState!.validate()) {
-                                      widget.onLoginSuccess();
+                                      final email = _controller.emailController.text.trim();
+                                      widget.onLoginSuccess(email); // ✅ Kirim email ke RouterDelegate
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
