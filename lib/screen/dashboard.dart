@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import '../models/detailwisatamodel.dart';
 import 'profil.dart';
 import 'detail_tanahlot.dart';
 import 'detail_pantaikuta.dart';
@@ -8,57 +8,21 @@ import 'detail_ulundanuberatan.dart';
 import 'detail_kelingking.dart';
 import 'detail_gwk.dart';
 import 'detail_tegalalang.dart';
-import '../models/detailwisatamodel.dart';
 import 'rekomendasi_page.dart';
-import 'dart:io';
 
-void main() {
-  runApp(const MyApp());
-}
+class DashboardPage extends StatefulWidget {
+  final VoidCallback onLogout;
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const DashboardPage({super.key, required this.onLogout});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Nature Travel App',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFFF9E8D9),
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFF5A94D)),
-        useMaterial3: true,
-        fontFamily: 'Sans',
-      ),
-      home: const HomePage(),
-    );
-  }
+  State<DashboardPage> createState() => _DashboardPageState();
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
+class _DashboardPageState extends State<DashboardPage> {
   final PageController _destinationController = PageController(viewportFraction: 0.9);
   final PageController _culinaryController = PageController(viewportFraction: 0.9);
   final PageController _hotelController = PageController(viewportFraction: 0.9);
-
-  // list dummy data destinasi
-  final List<String> allDestinations = [
-    'Borobudur Temple',
-    'Raja Ampat',
-    'Bali Beach',
-    'Sate Padang',
-    'Rendang',
-    'Pempek Palembang',
-    'Hotel Bali',
-    'Resort Lombok',
-    'Vila Ubud'
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +34,7 @@ class _HomePageState extends State<HomePage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              // Header
               Stack(
                 children: [
                   Container(
@@ -77,10 +42,7 @@ class _HomePageState extends State<HomePage> {
                     child: Stack(
                       children: [
                         Positioned.fill(
-                          child: Image.asset(
-                            "images/gwk.jpeg",
-                            fit: BoxFit.cover,
-                          ),
+                          child: Image.asset("images/gwk.jpeg", fit: BoxFit.cover),
                         ),
                         Positioned.fill(
                           child: Container(
@@ -102,7 +64,6 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Top bar
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -131,21 +92,15 @@ class _HomePageState extends State<HomePage> {
                                       ],
                                     ),
                                   ),
-                                  Row(
-                                      children: [
-                                        IconButton(
-                                          icon: const Icon(Icons.grid_view, color: Color(0xFF2F2F2F)),
-                                          onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => const RekomendasiPage(),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
+                                  IconButton(
+                                    icon: const Icon(Icons.grid_view, color: Color(0xFF2F2F2F)),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const RekomendasiPage()),
+                                      );
+                                    },
+                                  ),
                                 ],
                               ),
                               const SizedBox(height: 101),
@@ -160,10 +115,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               const Text(
                                 "If you like to travel, this is your app! Here you\ncan travel without hassle and enjoy it!\nThere's also accomodation and culinary reccomendation!",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFF4B4B4B),
-                                ),
+                                style: TextStyle(fontSize: 14, color: Color(0xFF4B4B4B)),
                               ),
                             ],
                           ),
@@ -325,49 +277,40 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: const Color(0xFFF9E8D9),
-          currentIndex: 0,
-          selectedItemColor: const Color(0xFFF5A94D),
-          unselectedItemColor: const Color(0xFF6D6D6D),
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          onTap: (index) async {
-            if (index == 1) {
-              final shouldExit = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text("Keluar Aplikasi"),
-                  content: const Text("Apakah kamu yakin ingin keluar dari aplikasi?"),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      child: const Text("Batal"),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, true),
-                      child: const Text("Keluar"),
-                    ),
-                  ],
-                ),
-              );
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xFFF9E8D9),
+        currentIndex: 0,
+        selectedItemColor: const Color(0xFFF5A94D),
+        unselectedItemColor: const Color(0xFF6D6D6D),
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        onTap: (index) async {
+          if (index == 1) {
+            final shouldLogout = await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text("Keluar Akun"),
+                content: const Text("Apakah kamu yakin ingin keluar dan kembali ke login?"),
+                actions: [
+                  TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("Batal")),
+                  TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Keluar")),
+                ],
+              ),
+            );
 
-              if (shouldExit == true) {
-                if (Platform.isAndroid || Platform.isIOS) {
-                  SystemNavigator.pop(); // Android/iOS
-                } else {
-                  exit(0); // Windows, macOS, Linux
-                }
-              }
+            if (shouldLogout == true) {
+              widget.onLogout(); // Panggil Navigator 2.0 logout
             }
-          },
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
-            BottomNavigationBarItem(icon: Icon(Icons.power_settings_new), label: ""),
-          ],
-        ),
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
+          BottomNavigationBarItem(icon: Icon(Icons.logout), label: ""),
+        ],
+      ),
     );
   }
+
 
   Widget buildSection(String title, String description, PageController controller, List<Widget> cards) {
     return Column(

@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import '../controllers/register_controller.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+  final VoidCallback onRegisterSuccess;
+
+  const RegisterPage({
+    super.key,
+    required this.onRegisterSuccess,
+  });
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -104,13 +109,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(content: Text("Pendaftaran berhasil!")),
                                     );
-                                    Navigator.pop(context);
+                                    widget.onRegisterSuccess();
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFFF5A94D),
                                   padding: const EdgeInsets.symmetric(vertical: 16),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
                                 ),
                                 child: const Text("Daftar", style: TextStyle(color: Colors.white)),
                               ),
@@ -119,7 +126,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                             Center(
                               child: GestureDetector(
-                                onTap: () => Navigator.pop(context),
+                                onTap: widget.onRegisterSuccess,
                                 child: const Text.rich(
                                   TextSpan(
                                     text: "Sudah punya akun? ",

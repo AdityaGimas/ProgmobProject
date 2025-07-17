@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import '../controllers/login_controller.dart';
-import 'register.dart';
-import 'dashboard.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final VoidCallback onLoginSuccess;
+  final VoidCallback onGoToRegister;
+
+  const LoginPage({
+    super.key,
+    required this.onLoginSuccess,
+    required this.onGoToRegister,
+  });
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -94,18 +99,20 @@ class _LoginPageState extends State<LoginPage> {
                                 child: ElevatedButton(
                                   onPressed: () {
                                     if (_formKey.currentState!.validate()) {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(builder: (_) => const HomePage()),
-                                      );
+                                      widget.onLoginSuccess();
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFF5A94D),
                                     padding: const EdgeInsets.symmetric(vertical: 16),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
                                   ),
-                                  child: const Text("Sign In", style: TextStyle(color: Colors.white)),
+                                  child: const Text(
+                                    "Sign In",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 16),
@@ -119,7 +126,9 @@ class _LoginPageState extends State<LoginPage> {
                                       icon: Image.asset('images/google.png', height: 20),
                                       label: const Text("Google"),
                                       style: OutlinedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -130,7 +139,9 @@ class _LoginPageState extends State<LoginPage> {
                                       icon: Image.asset('images/facebook.png', height: 20),
                                       label: const Text("Facebook"),
                                       style: OutlinedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -139,12 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                               const SizedBox(height: 24),
                               Center(
                                 child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (_) => const RegisterPage()),
-                                    );
-                                  },
+                                  onTap: widget.onGoToRegister,
                                   child: const Text.rich(
                                     TextSpan(
                                       text: "Belum punya akun? ",

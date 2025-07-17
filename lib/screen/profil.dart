@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'login.dart';
 
 class ProfilPage extends StatelessWidget {
   const ProfilPage({super.key});
@@ -212,32 +211,6 @@ class ProfilPage extends StatelessWidget {
                 socialImage("images/yt.jpeg"),
                 socialImage("images/x.jpeg"),
               ],
-            ),
-            const SizedBox(height: 40),
-            Center(
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.logout, color: Colors.white),
-                label: const Text(
-                  "Logout",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 14,
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
-                  );
-                },
-              ),
             ),
             const SizedBox(height: 40),
           ],
