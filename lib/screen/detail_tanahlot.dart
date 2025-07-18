@@ -16,7 +16,8 @@ class DetailTanahLotPage extends StatefulWidget {
 
 class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
   int _currentPage = 0;
-  bool _isBookmarked = false; // Status bookmark
+  bool _isBookmarked = false;
+  double fontSize = 16; // Variabel pengatur font deskripsi
   VideoPlayerController? _videoController;
 
   final String googleMapsUrl =
@@ -102,7 +103,6 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                         onPageChanged: (index) {
                           setState(() {
                             _currentPage = index;
-                            // Auto play video only when on last page
                             if (index == media.length - 1) {
                               if (_videoController != null && _videoController!.value.isInitialized) {
                                 _videoController!.play();
@@ -148,7 +148,6 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                                     aspectRatio: _videoController!.value.aspectRatio,
                                     child: VideoPlayer(_videoController!),
                                   ),
-                                  // Tombol play/pause di tengah bawah
                                   Positioned(
                                     bottom: 20,
                                     left: 0,
@@ -199,7 +198,7 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                         ),
                       ),
                     ),
-                    // Tombol bookmark AKTIF
+                    // Tombol bookmark
                     Positioned(
                       top: 24,
                       right: 20,
@@ -323,7 +322,7 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                         ),
                       ),
                     ),
-                    // Deskripsi
+                    // Deskripsi (gunakan fontSize)
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -337,16 +336,17 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                         ],
                       ),
                       padding: const EdgeInsets.all(20),
-                      child: const Text(
+                      child: Text(
                         "Pura Tanah Lot berdiri di atas batu karang di tepi laut, menjadi ikon budaya dan spiritual Bali. Tempat ini sangat populer untuk menikmati pemandangan matahari terbenam yang spektakuler. Pura ini juga menjadi salah satu situs warisan budaya UNESCO.",
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: fontSize, // Dynamic font size
                           color: Color(0xFF2F2F2F),
                           height: 1.6,
                         ),
                       ),
                     ),
                     const SizedBox(height: 32),
+                    // Tombol aksi utama
                     Row(
                       children: [
                         Expanded(
@@ -411,7 +411,6 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        // Tombol Reservasi
                         Expanded(
                           child: ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
@@ -451,7 +450,7 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                       ],
                     ),
                     const SizedBox(height: 24),
-                    // Section info tambahan (opsional aesthetic)
+                    // Icon info tambahan
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -472,6 +471,38 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
                         ),
                       ],
                     ),
+                    // SLIDER PENGATUR FONT SIZE
+                    Container(
+                      margin: const EdgeInsets.only(top: 20, bottom: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      color: Colors.orange.withOpacity(0.1),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.format_size, color: Colors.orange),
+                          Expanded(
+                            child: Slider(
+                              min: 14,
+                              max: 26,
+                              divisions: 6,
+                              value: fontSize,
+                              label: fontSize.round().toString(),
+                              onChanged: (val) {
+                                setState(() {
+                                  fontSize = val;
+                                });
+                              },
+                            ),
+                          ),
+                          Text(
+                            fontSize.round().toString(),
+                            style: const TextStyle(
+                              color: Colors.orange,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -480,68 +511,6 @@ class _DetailTanahLotPageState extends State<DetailTanahLotPage> {
         ),
       ),
     );
-  }
-}
-
-class _VideoPlayerWidget extends StatefulWidget {
-  final VideoPlayerController videoController;
-  final bool isPlaying;
-
-  const _VideoPlayerWidget({
-    required this.videoController,
-    required this.isPlaying,
-  });
-
-  @override
-  State<_VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
-}
-
-class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
-  @override
-  void initState() {
-    super.initState();
-    widget.videoController.addListener(() {
-      if (mounted) {
-        setState(() {});
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    widget.videoController.removeListener(() {});
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.videoController.value.isInitialized
-        ? GestureDetector(
-            onTap: () {
-              if (widget.videoController.value.isPlaying) {
-                widget.videoController.pause();
-              } else {
-                widget.videoController.play();
-              }
-            },
-            child: Stack(
-              children: [
-                VideoPlayer(widget.videoController),
-                Center(
-                  child: Icon(
-                    widget.videoController.value.isPlaying
-                        ? Icons.pause
-                        : Icons.play_arrow,
-                    color: Colors.white.withOpacity(0.8),
-                    size: 80,
-                  ),
-                ),
-              ],
-            ),
-          )
-        : const Center(
-            child: CircularProgressIndicator(),
-          );
   }
 }
 

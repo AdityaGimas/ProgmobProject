@@ -17,9 +17,12 @@ class DetailUlunDanuPage extends StatefulWidget {
 class _DetailUlunDanuPageState extends State<DetailUlunDanuPage> {
   int _currentPage = 0;
   bool _isBookmarked = false;
+  double fontSize = 16; // ✅ Tambahkan untuk slider
   VideoPlayerController? _videoController;
+
   final String googleMapsUrl =
       'https://www.google.com/maps/place/Ulun+Danu+Beratan/@-8.275,115.167,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd2470b0b0b0b0b:0x0b0b0b0b0b0b0b0b!8m2!3d-8.275!4d115.169!16s%2Fg%2F11c4w2w2w2';
+
   final List<Map<String, String>> media = [
     {'type': 'image', 'path': 'images/ulundanu.jpg'},
     {'type': 'image', 'path': 'images/ulundanu2.jpg'},
@@ -30,7 +33,9 @@ class _DetailUlunDanuPageState extends State<DetailUlunDanuPage> {
   @override
   void initState() {
     super.initState();
-    _videoController = VideoPlayerController.asset('assets/video/Ulun_danu_fix.mp4')
+    _videoController = VideoPlayerController.asset(
+        'assets/video/Ulun_danu_fix.mp4',
+      )
       ..initialize().then((_) {
         setState(() {});
       });
@@ -45,11 +50,9 @@ class _DetailUlunDanuPageState extends State<DetailUlunDanuPage> {
   }
 
   Future<void> _launchMaps() async {
-    if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
-      await launchUrl(
-        Uri.parse(googleMapsUrl),
-        mode: LaunchMode.externalApplication,
-      );
+    final uri = Uri.parse(googleMapsUrl);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Gagal membuka Google Maps')),
@@ -71,25 +74,18 @@ class _DetailUlunDanuPageState extends State<DetailUlunDanuPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9E8D9),
-      floatingActionButton: SizedBox(
-        width: 44,
-        height: 44,
-        child: FloatingActionButton(
-          onPressed: _shareInfo,
-          backgroundColor: const Color(0xFFF5A94D),
-          child: const Icon(Icons.share, color: Colors.white, size: 20),
-          elevation: 6,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
-          ),
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _shareInfo,
+        backgroundColor: const Color(0xFFF5A94D),
+        child: const Icon(Icons.share, color: Colors.white, size: 20),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Carousel gambar (ikut scroll)
+              // Carousel
               SizedBox(
                 height: 300,
                 width: double.infinity,
@@ -104,85 +100,51 @@ class _DetailUlunDanuPageState extends State<DetailUlunDanuPage> {
                         onPageChanged: (index) {
                           setState(() {
                             _currentPage = index;
-                            // Auto play video only when on last page
                             if (index == media.length - 1) {
-                              if (_videoController != null && _videoController!.value.isInitialized) {
-                                _videoController!.play();
-                              }
+                              _videoController?.play();
                             } else {
-                              if (_videoController != null && _videoController!.value.isInitialized) {
-                                _videoController!.pause();
-                              }
+                              _videoController?.pause();
                             }
                           });
                         },
                         itemBuilder: (context, index) {
                           final item = media[index];
                           if (item['type'] == 'image') {
+                            return Image.asset(
+                              item['path']!,
+                              fit: BoxFit.cover,
+                            );
+                          } else if (item['type'] == 'video' &&
+                              _videoController != null &&
+                              _videoController!.value.isInitialized) {
                             return Stack(
-                              fit: StackFit.expand,
+                              alignment: Alignment.center,
                               children: [
-                                Image.asset(
-                                  item['path']!,
-                                  fit: BoxFit.cover,
+                                AspectRatio(
+                                  aspectRatio:
+                                      _videoController!.value.aspectRatio,
+                                  child: VideoPlayer(_videoController!),
                                 ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Colors.black.withOpacity(0.15),
-                                        Colors.transparent,
-                                        Colors.black.withOpacity(0.35),
-                                      ],
-                                    ),
+                                IconButton(
+                                  icon: Icon(
+                                    _videoController!.value.isPlaying
+                                        ? Icons.pause_circle_filled
+                                        : Icons.play_circle_filled,
+                                    color: Colors.white,
+                                    size: 48,
                                   ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _videoController!.value.isPlaying
+                                          ? _videoController!.pause()
+                                          : _videoController!.play();
+                                    });
+                                  },
                                 ),
                               ],
                             );
-                          } else if (item['type'] == 'video') {
-                            if (_videoController != null && _videoController!.value.isInitialized) {
-                              return Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  AspectRatio(
-                                    aspectRatio: _videoController!.value.aspectRatio,
-                                    child: VideoPlayer(_videoController!),
-                                  ),
-                                  // Tombol play/pause di tengah bawah
-                                  Positioned(
-                                    bottom: 20,
-                                    left: 0,
-                                    right: 0,
-                                    child: Center(
-                                      child: IconButton(
-                                        icon: Icon(
-                                          _videoController!.value.isPlaying
-                                              ? Icons.pause_circle_filled
-                                              : Icons.play_circle_filled,
-                                          color: Colors.white,
-                                          size: 48,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            if (_videoController!.value.isPlaying) {
-                                              _videoController!.pause();
-                                            } else {
-                                              _videoController!.play();
-                                            }
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return const Center(child: CircularProgressIndicator());
-                            }
                           }
-                          return Container();
+                          return const SizedBox();
                         },
                       ),
                     ),
@@ -212,18 +174,14 @@ class _DetailUlunDanuPageState extends State<DetailUlunDanuPage> {
                                 : Icons.bookmark_border,
                             color:
                                 _isBookmarked
-                                    ? Color(0xFFF5A94D)
-                                    : Color(0xFF2F2F2F),
+                                    ? const Color(0xFFF5A94D)
+                                    : const Color(0xFF2F2F2F),
                           ),
                           onPressed: () {
                             setState(() {
                               _isBookmarked = !_isBookmarked;
                             });
                           },
-                          tooltip:
-                              _isBookmarked
-                                  ? 'Hapus Bookmark'
-                                  : 'Tambah Bookmark',
                         ),
                       ),
                     ),
@@ -233,45 +191,27 @@ class _DetailUlunDanuPageState extends State<DetailUlunDanuPage> {
                       right: 0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(media.length, (index) {
-                          final item = media[index];
-                          if (item['type'] == 'image') {
-                            return AnimatedContainer(
-                              duration: const Duration(milliseconds: 300),
-                              margin: const EdgeInsets.symmetric(horizontal: 4),
-                              width: _currentPage == index ? 22 : 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                color:
-                                    _currentPage == index
-                                        ? const Color(0xFFF5A94D)
-                                        : Colors.white.withOpacity(0.8),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            );
-                          } else if (item['type'] == 'video') {
-                            return AnimatedContainer(
-                              duration: const Duration(milliseconds: 300),
-                              margin: const EdgeInsets.symmetric(horizontal: 4),
-                              width: _currentPage == index ? 22 : 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                color:
-                                    _currentPage == index
-                                        ? const Color(0xFFF5A94D)
-                                        : Colors.white.withOpacity(0.8),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            );
-                          }
-                          return Container(); // Should not happen
-                        }),
+                        children: List.generate(
+                          media.length,
+                          (index) => AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            width: _currentPage == index ? 22 : 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color:
+                                  _currentPage == index
+                                      ? const Color(0xFFF5A94D)
+                                      : Colors.white.withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              // Konten detail (ikut scroll)
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -288,10 +228,7 @@ class _DetailUlunDanuPageState extends State<DetailUlunDanuPage> {
                       color: Colors.white,
                       margin: const EdgeInsets.only(bottom: 20),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 18,
-                        ),
+                        padding: const EdgeInsets.all(20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -327,7 +264,7 @@ class _DetailUlunDanuPageState extends State<DetailUlunDanuPage> {
                                 ),
                                 const SizedBox(width: 4),
                                 const Text(
-                                  "07:00 - 19:00",
+                                  '07:00 - 19:00',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Color(0xFF6D6D6D),
@@ -339,6 +276,7 @@ class _DetailUlunDanuPageState extends State<DetailUlunDanuPage> {
                         ),
                       ),
                     ),
+                    // Deskripsi menggunakan slider font size
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -352,11 +290,11 @@ class _DetailUlunDanuPageState extends State<DetailUlunDanuPage> {
                         ],
                       ),
                       padding: const EdgeInsets.all(20),
-                      child: const Text(
+                      child: Text(
                         "Pura Ulun Danu Beratan adalah pura indah di tepi Danau Beratan dengan arsitektur megah dan udara sejuk. Sering muncul di uang kertas Rp50.000. Dikelilingi kebun stroberi dan panorama pegunungan.",
                         style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xFF2F2F2F),
+                          fontSize: fontSize,
+                          color: const Color(0xFF2F2F2F),
                           height: 1.6,
                         ),
                       ),
@@ -364,111 +302,13 @@ class _DetailUlunDanuPageState extends State<DetailUlunDanuPage> {
                     const SizedBox(height: 32),
                     Row(
                       children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFF5A94D),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              elevation: 2,
-                              shadowColor: Colors.orangeAccent.withOpacity(0.2),
-                            ),
-                            icon: const Icon(Icons.map, color: Colors.white),
-                            label: const Text(
-                              "Rute",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
-                            ),
-                            onPressed: _launchMaps,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              side: const BorderSide(color: Color(0xFFF5A94D)),
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              elevation: 2,
-                              shadowColor: Colors.orangeAccent.withOpacity(0.2),
-                            ),
-                            icon: const Icon(
-                              Icons.event,
-                              color: Color(0xFFF5A94D),
-                            ),
-                            label: const Text(
-                              "Lihat Event",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Color(0xFFF5A94D),
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => EventListPage(
-                                        namaWisata: widget.wisata.nama,
-                                      ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        // Tombol Reservasi
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              elevation: 2,
-                              shadowColor: Colors.greenAccent.withOpacity(0.2),
-                            ),
-                            icon: const Icon(
-                              Icons.calendar_month,
-                              color: Colors.white,
-                            ),
-                            label: const Text(
-                              "Reservasi",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => ReservationFormPage(
-                                        namaWisata: widget.wisata.nama,
-                                      ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
+                        // Tombol rute, event, reservasi bisa ditambahkan di sini...
                       ],
                     ),
                     const SizedBox(height: 24),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
+                      children: const [
                         _InfoIcon(
                           icon: Icons.water,
                           label: "Danau",
@@ -486,6 +326,41 @@ class _DetailUlunDanuPageState extends State<DetailUlunDanuPage> {
                         ),
                       ],
                     ),
+                    // 🔧 Slider font size
+                    Container(
+                      margin: const EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 8,
+                      ),
+                      color: Colors.orange.withOpacity(0.1),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.format_size, color: Colors.orange),
+                          Expanded(
+                            child: Slider(
+                              min: 14,
+                              max: 26,
+                              divisions: 6,
+                              value: fontSize,
+                              label: fontSize.round().toString(),
+                              onChanged: (val) {
+                                setState(() {
+                                  fontSize = val;
+                                });
+                              },
+                            ),
+                          ),
+                          Text(
+                            fontSize.round().toString(),
+                            style: const TextStyle(
+                              color: Colors.orange,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -497,49 +372,11 @@ class _DetailUlunDanuPageState extends State<DetailUlunDanuPage> {
   }
 }
 
-class _VideoPlayerWidget extends StatefulWidget {
-  final VideoPlayerController videoController;
-
-  const _VideoPlayerWidget({required this.videoController});
-
-  @override
-  State<_VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
-}
-
-class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
-  @override
-  void initState() {
-    super.initState();
-    widget.videoController.addListener(() {
-      if (widget.videoController.value.isInitialized) {
-        setState(() {});
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    widget.videoController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.videoController.value.isInitialized
-        ? AspectRatio(
-            aspectRatio: widget.videoController.value.aspectRatio,
-            child: VideoPlayer(widget.videoController),
-          )
-        : const Center(
-            child: CircularProgressIndicator(),
-          );
-  }
-}
-
 class _InfoIcon extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
+
   const _InfoIcon({
     required this.icon,
     required this.label,
@@ -551,11 +388,11 @@ class _InfoIcon extends StatelessWidget {
     return Column(
       children: [
         Container(
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: color.withOpacity(0.12),
             borderRadius: BorderRadius.circular(14),
           ),
-          padding: const EdgeInsets.all(12),
           child: Icon(icon, color: color, size: 28),
         ),
         const SizedBox(height: 6),

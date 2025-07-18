@@ -17,9 +17,12 @@ class DetailTegalalangPage extends StatefulWidget {
 class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
   int _currentPage = 0;
   bool _isBookmarked = false;
+  double fontSize = 16; // Variabel pengatur font deskripsi
   VideoPlayerController? _videoController;
+
   final String googleMapsUrl =
       'https://www.google.com/maps/place/Tegalalang+Rice+Terrace/@-8.435,115.279,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd2470b0b0b0b0b:0x0b0b0b0b0b0b0b0b!8m2!3d-8.435!4d115.281!16s%2Fg%2F11c4w2w2w2';
+
   final List<Map<String, String>> media = [
     {'type': 'image', 'path': 'images/tegalalang.jpg'},
     {'type': 'image', 'path': 'images/tegalalang2.jpg'},
@@ -46,8 +49,7 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
 
   Future<void> _launchMaps() async {
     if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
-      await launchUrl(Uri.parse(googleMapsUrl),
-          mode: LaunchMode.externalApplication);
+      await launchUrl(Uri.parse(googleMapsUrl), mode: LaunchMode.externalApplication);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Gagal membuka Google Maps')),
@@ -69,21 +71,12 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9E8D9),
-      floatingActionButton: SizedBox(
-        width: 44,
-        height: 44,
-        child: FloatingActionButton(
-          onPressed: _shareInfo,
-          backgroundColor: const Color(0xFFF5A94D),
-          child: const Icon(
-            Icons.share,
-            color: Colors.white,
-            size: 20,
-          ),
-          elevation: 6,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _shareInfo,
+        backgroundColor: const Color(0xFFF5A94D),
+        child: const Icon(Icons.share, color: Colors.white, size: 20),
+        elevation: 6,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -98,7 +91,8 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                   children: [
                     ClipRRect(
                       borderRadius: const BorderRadius.vertical(
-                          bottom: Radius.circular(32)),
+                        bottom: Radius.circular(32),
+                      ),
                       child: PageView.builder(
                         itemCount: media.length,
                         onPageChanged: (index) {
@@ -150,7 +144,6 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                                     aspectRatio: _videoController!.value.aspectRatio,
                                     child: VideoPlayer(_videoController!),
                                   ),
-                                  // Tombol play/pause di tengah bawah
                                   Positioned(
                                     bottom: 20,
                                     left: 0,
@@ -193,8 +186,7 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                       child: CircleAvatar(
                         backgroundColor: Colors.white.withOpacity(0.85),
                         child: IconButton(
-                          icon: const Icon(Icons.arrow_back,
-                              color: Color(0xFF2F2F2F)),
+                          icon: const Icon(Icons.arrow_back, color: Color(0xFF2F2F2F)),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ),
@@ -206,21 +198,15 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                         backgroundColor: Colors.white.withOpacity(0.85),
                         child: IconButton(
                           icon: Icon(
-                            _isBookmarked
-                                ? Icons.bookmark
-                                : Icons.bookmark_border,
-                            color: _isBookmarked
-                                ? Color(0xFFF5A94D)
-                                : Color(0xFF2F2F2F),
+                            _isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                            color: _isBookmarked ? Color(0xFFF5A94D) : Color(0xFF2F2F2F),
                           ),
                           onPressed: () {
                             setState(() {
                               _isBookmarked = !_isBookmarked;
                             });
                           },
-                          tooltip: _isBookmarked
-                              ? 'Hapus Bookmark'
-                              : 'Tambah Bookmark',
+                          tooltip: _isBookmarked ? 'Hapus Bookmark' : 'Tambah Bookmark',
                         ),
                       ),
                     ),
@@ -252,8 +238,7 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
               ),
               // Konten detail (ikut scroll)
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -265,8 +250,7 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                       color: Colors.white,
                       margin: const EdgeInsets.only(bottom: 20),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 18),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -281,8 +265,7 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                             const SizedBox(height: 8),
                             Row(
                               children: [
-                                const Icon(Icons.place,
-                                    color: Color(0xFFF5A94D), size: 20),
+                                const Icon(Icons.place, color: Color(0xFFF5A94D), size: 20),
                                 const SizedBox(width: 4),
                                 Text(
                                   widget.wisata.lokasi,
@@ -292,8 +275,7 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                                   ),
                                 ),
                                 const Spacer(),
-                                const Icon(Icons.access_time,
-                                    color: Color(0xFFF5A94D), size: 20),
+                                const Icon(Icons.access_time, color: Color(0xFFF5A94D), size: 20),
                                 const SizedBox(width: 4),
                                 const Text(
                                   "07:00 - 18:00",
@@ -308,6 +290,7 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                         ),
                       ),
                     ),
+                    // Deskripsi utama dengan font dinamis
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -321,10 +304,10 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                         ],
                       ),
                       padding: const EdgeInsets.all(20),
-                      child: const Text(
+                      child: Text(
                         "Sawah terasering Tegalalang menawarkan pemandangan hijau bertingkat. Cocok untuk foto dengan ayunan dan menikmati kopi di warung lokal.",
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: fontSize,
                           color: Color(0xFF2F2F2F),
                           height: 1.6,
                         ),
@@ -385,17 +368,15 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder:
-                                      (context) => EventListPage(
-                                        namaWisata: widget.wisata.nama,
-                                      ),
+                                  builder: (context) => EventListPage(
+                                    namaWisata: widget.wisata.nama,
+                                  ),
                                 ),
                               );
                             },
                           ),
                         ),
                         const SizedBox(width: 12),
-                        // Tombol Reservasi
                         Expanded(
                           child: ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
@@ -423,10 +404,9 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder:
-                                      (context) => ReservationFormPage(
-                                        namaWisata: widget.wisata.nama,
-                                      ),
+                                  builder: (context) => ReservationFormPage(
+                                    namaWisata: widget.wisata.nama,
+                                  ),
                                 ),
                               );
                             },
@@ -455,6 +435,38 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
                         ),
                       ],
                     ),
+                    // Slider pengatur fontSize
+                    Container(
+                      margin: const EdgeInsets.only(top: 20, bottom: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      color: Colors.orange.withOpacity(0.1),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.format_size, color: Colors.orange),
+                          Expanded(
+                            child: Slider(
+                              min: 14,
+                              max: 26,
+                              divisions: 6,
+                              value: fontSize,
+                              label: fontSize.round().toString(),
+                              onChanged: (val) {
+                                setState(() {
+                                  fontSize = val;
+                                });
+                              },
+                            ),
+                          ),
+                          Text(
+                            fontSize.round().toString(),
+                            style: const TextStyle(
+                              color: Colors.orange,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -462,68 +474,6 @@ class _DetailTegalalangPageState extends State<DetailTegalalangPage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _VideoPlayerWidget extends StatefulWidget {
-  final VideoPlayerController videoController;
-
-  const _VideoPlayerWidget({required this.videoController});
-
-  @override
-  State<_VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
-}
-
-class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
-  @override
-  void initState() {
-    super.initState();
-    widget.videoController.addListener(() {
-      if (widget.videoController.value.isPlaying) {
-        setState(() {});
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    widget.videoController.removeListener(() {});
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        VideoPlayer(widget.videoController),
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            color: Colors.black.withOpacity(0.5),
-            child: Center(
-              child: IconButton(
-                icon: Icon(
-                  widget.videoController.value.isPlaying
-                      ? Icons.pause
-                      : Icons.play_arrow,
-                  color: Colors.white,
-                  size: 60,
-                ),
-                onPressed: () {
-                  setState(() {
-                    widget.videoController.value.isPlaying
-                        ? widget.videoController.pause()
-                        : widget.videoController.play();
-                  });
-                },
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

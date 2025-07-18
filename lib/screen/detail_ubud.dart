@@ -17,9 +17,12 @@ class DetailUbudPage extends StatefulWidget {
 class _DetailUbudPageState extends State<DetailUbudPage> {
   int _currentPage = 0;
   bool _isBookmarked = false;
+  double fontSize = 16; // ✅ Variabel tambahan fontSize
   VideoPlayerController? _videoController;
+
   final String googleMapsUrl =
       'https://www.google.com/maps/place/Ubud/@-8.506,115.262,17z/data=!3m1!4b1!4m6!3m5!1s0x2dd2470b0b0b0b0b:0x0b0b0b0b0b0b0b0b!8m2!3d-8.506!4d115.264!16s%2Fg%2F11c4w2w2w2';
+
   final List<Map<String, String>> media = [
     {'type': 'image', 'path': 'images/ubud.jpg'},
     {'type': 'image', 'path': 'images/ubud2.jpg'},
@@ -46,8 +49,7 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
 
   Future<void> _launchMaps() async {
     if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
-      await launchUrl(Uri.parse(googleMapsUrl),
-          mode: LaunchMode.externalApplication);
+      await launchUrl(Uri.parse(googleMapsUrl), mode: LaunchMode.externalApplication);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Gagal membuka Google Maps')),
@@ -69,120 +71,69 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9E8D9),
-      floatingActionButton: SizedBox(
-        width: 44,
-        height: 44,
-        child: FloatingActionButton(
-          onPressed: _shareInfo,
-          backgroundColor: const Color(0xFFF5A94D),
-          child: const Icon(
-            Icons.share,
-            color: Colors.white,
-            size: 20,
-          ),
-          elevation: 6,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _shareInfo,
+        backgroundColor: const Color(0xFFF5A94D),
+        child: const Icon(Icons.share, color: Colors.white, size: 20),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Carousel gambar (ikut scroll)
+              // Carousel
               SizedBox(
                 height: 300,
                 width: double.infinity,
                 child: Stack(
                   children: [
                     ClipRRect(
-                      borderRadius: const BorderRadius.vertical(
-                          bottom: Radius.circular(32)),
+                      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
                       child: PageView.builder(
                         itemCount: media.length,
                         onPageChanged: (index) {
                           setState(() {
                             _currentPage = index;
-                            // Auto play video only when on last page
                             if (index == media.length - 1) {
-                              if (_videoController != null && _videoController!.value.isInitialized) {
-                                _videoController!.play();
-                              }
+                              _videoController?.play();
                             } else {
-                              if (_videoController != null && _videoController!.value.isInitialized) {
-                                _videoController!.pause();
-                              }
+                              _videoController?.pause();
                             }
                           });
                         },
                         itemBuilder: (context, index) {
                           final item = media[index];
                           if (item['type'] == 'image') {
+                            return Image.asset(item['path']!, fit: BoxFit.cover);
+                          } else if (item['type'] == 'video' && _videoController?.value.isInitialized == true) {
                             return Stack(
-                              fit: StackFit.expand,
+                              alignment: Alignment.center,
                               children: [
-                                Image.asset(
-                                  item['path']!,
-                                  fit: BoxFit.cover,
+                                AspectRatio(
+                                  aspectRatio: _videoController!.value.aspectRatio,
+                                  child: VideoPlayer(_videoController!),
                                 ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Colors.black.withOpacity(0.15),
-                                        Colors.transparent,
-                                        Colors.black.withOpacity(0.35),
-                                      ],
-                                    ),
+                                IconButton(
+                                  icon: Icon(
+                                    _videoController!.value.isPlaying
+                                        ? Icons.pause_circle_filled
+                                        : Icons.play_circle_filled,
+                                    color: Colors.white,
+                                    size: 48,
                                   ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _videoController!.value.isPlaying
+                                          ? _videoController!.pause()
+                                          : _videoController!.play();
+                                    });
+                                  },
                                 ),
                               ],
                             );
-                          } else if (item['type'] == 'video') {
-                            if (_videoController != null && _videoController!.value.isInitialized) {
-                              return Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  AspectRatio(
-                                    aspectRatio: _videoController!.value.aspectRatio,
-                                    child: VideoPlayer(_videoController!),
-                                  ),
-                                  // Tombol play/pause di tengah bawah
-                                  Positioned(
-                                    bottom: 20,
-                                    left: 0,
-                                    right: 0,
-                                    child: Center(
-                                      child: IconButton(
-                                        icon: Icon(
-                                          _videoController!.value.isPlaying
-                                              ? Icons.pause_circle_filled
-                                              : Icons.play_circle_filled,
-                                          color: Colors.white,
-                                          size: 48,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            if (_videoController!.value.isPlaying) {
-                                              _videoController!.pause();
-                                            } else {
-                                              _videoController!.play();
-                                            }
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return const Center(child: CircularProgressIndicator());
-                            }
                           }
-                          return Container();
+                          return const SizedBox();
                         },
                       ),
                     ),
@@ -192,8 +143,7 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                       child: CircleAvatar(
                         backgroundColor: Colors.white.withOpacity(0.85),
                         child: IconButton(
-                          icon: const Icon(Icons.arrow_back,
-                              color: Color(0xFF2F2F2F)),
+                          icon: const Icon(Icons.arrow_back, color: Color(0xFF2F2F2F)),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ),
@@ -205,83 +155,55 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                         backgroundColor: Colors.white.withOpacity(0.85),
                         child: IconButton(
                           icon: Icon(
-                            _isBookmarked
-                                ? Icons.bookmark
-                                : Icons.bookmark_border,
-                            color: _isBookmarked
-                                ? Color(0xFFF5A94D)
-                                : Color(0xFF2F2F2F),
+                            _isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                            color: _isBookmarked ? Color(0xFFF5A94D) : Color(0xFF2F2F2F),
                           ),
                           onPressed: () {
                             setState(() {
                               _isBookmarked = !_isBookmarked;
                             });
                           },
-                          tooltip: _isBookmarked
-                              ? 'Hapus Bookmark'
-                              : 'Tambah Bookmark',
+                          tooltip: _isBookmarked ? 'Hapus Bookmark' : 'Tambah Bookmark',
                         ),
                       ),
                     ),
                     Positioned(
-                      bottom: 18,
+                      bottom: 16,
                       left: 0,
                       right: 0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(media.length, (index) {
-                          final item = media[index];
-                          if (item['type'] == 'image') {
-                            return AnimatedContainer(
-                              duration: const Duration(milliseconds: 300),
-                              margin: const EdgeInsets.symmetric(horizontal: 4),
-                              width: _currentPage == index ? 22 : 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                color: _currentPage == index
-                                    ? const Color(0xFFF5A94D)
-                                    : Colors.white.withOpacity(0.8),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            );
-                          } else if (item['type'] == 'video') {
-                            return AnimatedContainer(
-                              duration: const Duration(milliseconds: 300),
-                              margin: const EdgeInsets.symmetric(horizontal: 4),
-                              width: _currentPage == index ? 22 : 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                color: _currentPage == index
-                                    ? const Color(0xFFF5A94D)
-                                    : Colors.white.withOpacity(0.8),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            );
-                          }
-                          return Container(); // Should not happen
-                        }),
+                        children: List.generate(
+                          media.length,
+                          (index) => AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            width: _currentPage == index ? 22 : 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: _currentPage == index ? const Color(0xFFF5A94D) : Colors.white.withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              // Konten detail (ikut scroll)
+              // Konten
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                       elevation: 4,
                       color: Colors.white,
                       margin: const EdgeInsets.only(bottom: 20),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 18),
+                        padding: const EdgeInsets.all(20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -296,26 +218,18 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                             const SizedBox(height: 8),
                             Row(
                               children: [
-                                const Icon(Icons.place,
-                                    color: Color(0xFFF5A94D), size: 20),
+                                const Icon(Icons.place, color: Color(0xFFF5A94D), size: 20),
                                 const SizedBox(width: 4),
                                 Text(
                                   widget.wisata.lokasi,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Color(0xFF6D6D6D),
-                                  ),
+                                  style: const TextStyle(fontSize: 16, color: Color(0xFF6D6D6D)),
                                 ),
                                 const Spacer(),
-                                const Icon(Icons.access_time,
-                                    color: Color(0xFFF5A94D), size: 20),
+                                const Icon(Icons.access_time, color: Color(0xFFF5A94D), size: 20),
                                 const SizedBox(width: 4),
                                 const Text(
                                   "24 Jam",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Color(0xFF6D6D6D),
-                                  ),
+                                  style: TextStyle(fontSize: 16, color: Color(0xFF6D6D6D)),
                                 ),
                               ],
                             ),
@@ -336,11 +250,11 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                         ],
                       ),
                       padding: const EdgeInsets.all(20),
-                      child: const Text(
+                      child: Text(
                         "Ubud adalah pusat budaya Bali dengan museum seni, pasar tradisional, dan hutan monyet. Cocok untuk penikmat seni dan alam.",
                         style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xFF2F2F2F),
+                          fontSize: fontSize,
+                          color: const Color(0xFF2F2F2F),
                           height: 1.6,
                         ),
                       ),
@@ -350,101 +264,58 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                       children: [
                         Expanded(
                           child: ElevatedButton.icon(
+                            onPressed: _launchMaps,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFFF5A94D),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18),
-                              ),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                               padding: const EdgeInsets.symmetric(vertical: 16),
-                              elevation: 2,
-                              shadowColor: Colors.orangeAccent.withOpacity(0.2),
                             ),
                             icon: const Icon(Icons.map, color: Colors.white),
                             label: const Text(
                               "Rute",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
+                              style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
                             ),
-                            onPressed: _launchMaps,
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => EventListPage(namaWisata: widget.wisata.nama),
+                              ));
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18),
-                              ),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                               side: const BorderSide(color: Color(0xFFF5A94D)),
                               padding: const EdgeInsets.symmetric(vertical: 16),
-                              elevation: 2,
-                              shadowColor: Colors.orangeAccent.withOpacity(0.2),
                             ),
-                            icon: const Icon(
-                              Icons.event,
-                              color: Color(0xFFF5A94D),
-                            ),
+                            icon: const Icon(Icons.event, color: Color(0xFFF5A94D)),
                             label: const Text(
                               "Lihat Event",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Color(0xFFF5A94D),
-                              ),
+                              style: TextStyle(fontSize: 16, color: Color(0xFFF5A94D), fontWeight: FontWeight.bold),
                             ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => EventListPage(
-                                        namaWisata: widget.wisata.nama,
-                                      ),
-                                ),
-                              );
-                            },
                           ),
                         ),
                         const SizedBox(width: 12),
-                        // Tombol Reservasi
                         Expanded(
                           child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => ReservationFormPage(namaWisata: widget.wisata.nama),
+                              ));
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18),
-                              ),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                               padding: const EdgeInsets.symmetric(vertical: 16),
-                              elevation: 2,
-                              shadowColor: Colors.greenAccent.withOpacity(0.2),
                             ),
-                            icon: const Icon(
-                              Icons.calendar_month,
-                              color: Colors.white,
-                            ),
+                            icon: const Icon(Icons.calendar_month, color: Colors.white),
                             label: const Text(
                               "Reservasi",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
+                              style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
                             ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => ReservationFormPage(
-                                        namaWisata: widget.wisata.nama,
-                                      ),
-                                ),
-                              );
-                            },
                           ),
                         ),
                       ],
@@ -452,23 +323,36 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
                     const SizedBox(height: 24),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _InfoIcon(
-                          icon: Icons.art_track_rounded,
-                          label: "Seni",
-                          color: Colors.purple,
-                        ),
-                        _InfoIcon(
-                          icon: Icons.directions_walk_rounded,
-                          label: "Tari",
-                          color: Colors.orange,
-                        ),
-                        _InfoIcon(
-                          icon: Icons.shopping_bag_rounded,
-                          label: "Pasar",
-                          color: Colors.pink,
-                        ),
+                      children: const [
+                        _InfoIcon(icon: Icons.art_track_rounded, label: "Seni", color: Colors.purple),
+                        _InfoIcon(icon: Icons.directions_walk_rounded, label: "Tari", color: Colors.orange),
+                        _InfoIcon(icon: Icons.shopping_bag_rounded, label: "Pasar", color: Colors.pink),
                       ],
+                    ),
+                    // Slider
+                    Container(
+                      margin: const EdgeInsets.only(top: 20, bottom: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      color: Colors.orange.withOpacity(0.1),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.format_size, color: Colors.orange),
+                          Expanded(
+                            child: Slider(
+                              min: 14,
+                              max: 26,
+                              divisions: 6,
+                              value: fontSize,
+                              label: fontSize.round().toString(),
+                              onChanged: (val) => setState(() => fontSize = val),
+                            ),
+                          ),
+                          Text(
+                            fontSize.round().toString(),
+                            style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -481,70 +365,11 @@ class _DetailUbudPageState extends State<DetailUbudPage> {
   }
 }
 
-class _VideoPlayerWidget extends StatefulWidget {
-  final VideoPlayerController videoController;
-
-  const _VideoPlayerWidget({required this.videoController});
-
-  @override
-  State<_VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
-}
-
-class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
-  @override
-  void initState() {
-    super.initState();
-    widget.videoController.addListener(() {
-      if (widget.videoController.value.isPlaying) {
-        setState(() {});
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    widget.videoController.removeListener(() {});
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        VideoPlayer(widget.videoController),
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: Center(
-            child: IconButton(
-              icon: Icon(
-                widget.videoController.value.isPlaying
-                    ? Icons.pause
-                    : Icons.play_arrow,
-                color: Colors.white,
-                size: 60,
-              ),
-              onPressed: () {
-                setState(() {
-                  widget.videoController.value.isPlaying
-                      ? widget.videoController.pause()
-                      : widget.videoController.play();
-                });
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class _InfoIcon extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
+
   const _InfoIcon({
     required this.icon,
     required this.label,
@@ -564,10 +389,7 @@ class _InfoIcon extends StatelessWidget {
           child: Icon(icon, color: color, size: 28),
         ),
         const SizedBox(height: 6),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 13, color: Color(0xFF6D6D6D)),
-        ),
+        Text(label, style: const TextStyle(fontSize: 13, color: Color(0xFF6D6D6D))),
       ],
     );
   }

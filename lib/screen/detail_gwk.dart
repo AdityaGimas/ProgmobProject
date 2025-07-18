@@ -17,6 +17,7 @@ class DetailGWKPage extends StatefulWidget {
 class _DetailGWKPageState extends State<DetailGWKPage> {
   int _currentPage = 0;
   bool _isBookmarked = false;
+  double fontSize = 16;
   VideoPlayerController? _videoController;
   final String googleMapsUrl =
       'https://www.google.com/maps/place/Taman+Budaya+Garuda+Wisnu+Kencana/@-8.8104228,115.1650183,16z/data=!3m1!4b1!4m6!3m5!1s0x2dd244cf54e1dec7:0x1988663e064f5a51!8m2!3d-8.8104228!4d115.1675986!16zL20vMGRyenpx?entry=ttu&g_ep=EgoyMDI1MDYwOC4wIKXMDSoASAFQAw%3D%3D';
@@ -89,6 +90,7 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Carousel media
               SizedBox(
                 height: 300,
                 width: double.infinity,
@@ -103,13 +105,14 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                         onPageChanged: (index) {
                           setState(() {
                             _currentPage = index;
-                            // mulai vid otomatis
                             if (index == media.length - 1) {
-                              if (_videoController != null && _videoController!.value.isInitialized) {
+                              if (_videoController != null &&
+                                  _videoController!.value.isInitialized) {
                                 _videoController!.play();
                               }
                             } else {
-                              if (_videoController != null && _videoController!.value.isInitialized) {
+                              if (_videoController != null &&
+                                  _videoController!.value.isInitialized) {
                                 _videoController!.pause();
                               }
                             }
@@ -120,7 +123,10 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                             return Stack(
                               fit: StackFit.expand,
                               children: [
-                                Image.asset(media[index]['path']!, fit: BoxFit.cover),
+                                Image.asset(
+                                  media[index]['path']!,
+                                  fit: BoxFit.cover,
+                                ),
                                 Container(
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
@@ -137,12 +143,14 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                               ],
                             );
                           } else if (media[index]['type'] == 'video') {
-                            if (_videoController != null && _videoController!.value.isInitialized) {
+                            if (_videoController != null &&
+                                _videoController!.value.isInitialized) {
                               return Stack(
                                 alignment: Alignment.center,
                                 children: [
                                   AspectRatio(
-                                    aspectRatio: _videoController!.value.aspectRatio,
+                                    aspectRatio:
+                                        _videoController!.value.aspectRatio,
                                     child: VideoPlayer(_videoController!),
                                   ),
                                   Positioned(
@@ -157,7 +165,9 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                                       ),
                                       onPressed: () {
                                         setState(() {
-                                          if (_videoController!.value.isPlaying) {
+                                          if (_videoController!
+                                              .value
+                                              .isPlaying) {
                                             _videoController!.pause();
                                           } else {
                                             _videoController!.play();
@@ -169,7 +179,9 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                                 ],
                               );
                             } else {
-                              return const Center(child: CircularProgressIndicator());
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
                             }
                           }
                           return const SizedBox();
@@ -244,6 +256,7 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                   ],
                 ),
               ),
+              // Konten berikutnya
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -324,11 +337,11 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                         ],
                       ),
                       padding: const EdgeInsets.all(20),
-                      child: const Text(
+                      child: Text(
                         "Garuda Wisnu Kencana (GWK) adalah taman budaya di atas bukit kapur, menampilkan patung Dewa Wisnu dan Garuda raksasa setinggi 120 meter. Selain patung ikonik, GWK juga menawarkan taman luas, pertunjukan seni, street theater, dan panorama Bali Selatan dari ketinggian.",
                         style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xFF2F2F2F),
+                          fontSize: fontSize,
+                          color: const Color(0xFF2F2F2F),
                           height: 1.6,
                         ),
                       ),
@@ -398,7 +411,6 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        // Tombol Reservasi
                         Expanded(
                           child: ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
@@ -438,6 +450,7 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                       ],
                     ),
                     const SizedBox(height: 24),
+                    // Icon fasilitas/event
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: const [
@@ -457,6 +470,41 @@ class _DetailGWKPageState extends State<DetailGWKPage> {
                           color: Colors.blue,
                         ),
                       ],
+                    ),
+                    // --- SLIDER FONT SIZE DIPINDAH KE SINI ---
+                    Container(
+                      margin: const EdgeInsets.only(top: 22, bottom: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 8,
+                      ),
+                      color: Colors.orange.withOpacity(0.1),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.format_size, color: Colors.orange),
+                          Expanded(
+                            child: Slider(
+                              min: 14,
+                              max: 26,
+                              divisions: 6,
+                              value: fontSize,
+                              label: fontSize.round().toString(),
+                              onChanged: (val) {
+                                setState(() {
+                                  fontSize = val;
+                                });
+                              },
+                            ),
+                          ),
+                          Text(
+                            fontSize.round().toString(),
+                            style: const TextStyle(
+                              color: Colors.orange,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
