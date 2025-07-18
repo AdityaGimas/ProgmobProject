@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                                   onPressed: () {
                                     if (_formKey.currentState!.validate()) {
                                       final email = _controller.emailController.text.trim();
-                                      widget.onLoginSuccess(email); // ✅ Kirim email ke RouterDelegate
+                                      widget.onLoginSuccess(email); 
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(

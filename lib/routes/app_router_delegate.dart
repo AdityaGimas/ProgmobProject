@@ -6,7 +6,6 @@ import '../screen/dashboard.dart';
 import '../screen/profil.dart';
 import 'page_manager.dart';
 
-/// Enum halaman aplikasi
 enum AppPage {
   login,
   register,
