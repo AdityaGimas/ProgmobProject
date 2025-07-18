@@ -2,7 +2,7 @@ name: progmob_kelompok
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -30,7 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-   
+
+  flutter_tts: ^3.8.4
   image_picker: ^1.1.0
   image_picker_windows: ^0.2.1+1
   image_picker_web: ^3.1.0
@@ -65,7 +66,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   uses-material-design: true
-  
+
   assets:
     - images/
     - assets/video/GWK_fix.mp4
