@@ -9,21 +9,53 @@ import 'detail_kelingking.dart';
 import 'detail_gwk.dart';
 import 'detail_tegalalang.dart';
 import 'rekomendasi_page.dart';
+import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class DashboardPage extends StatefulWidget {
   final String email;
   final VoidCallback onLogout;
+  final VoidCallback onGoToProfil;
 
-  const DashboardPage({super.key, required this.email, required this.onLogout});
+  const DashboardPage({super.key, required this.email, required this.onLogout, required this.onGoToProfil,});
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  final PageController _destinationController = PageController(viewportFraction: 0.9);
+   final PageController _destinationController = PageController(viewportFraction: 0.9);
   final PageController _culinaryController = PageController(viewportFraction: 0.9);
   final PageController _hotelController = PageController(viewportFraction: 0.9);
+
+  File? _profileImage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileImage();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadProfileImage(); // Memuat ulang gambar saat kembali dari profil
+  }
+
+  Future<void> _loadProfileImage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final path = prefs.getString('savedImagePath');
+    if (path != null && File(path).existsSync()) {
+      setState(() {
+        _profileImage = File(path);
+      });
+    } else {
+      setState(() {
+        _profileImage = null;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,18 +102,16 @@ class _DashboardPageState extends State<DashboardPage> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => const ProfilPage()),
-                                      );
-                                    },
+                                      onTap: widget.onGoToProfil,
+                                      
                                     child: Row(
                                       children: [
-                                        const CircleAvatar(
-                                          radius: 20,
-                                          backgroundImage: AssetImage("images/user.png"),
-                                        ),
+                                          CircleAvatar(
+                                            radius: 20,
+                                            backgroundImage: _profileImage != null
+                                                ? FileImage(_profileImage!)
+                                                : const AssetImage("images/user.png") as ImageProvider,
+                                          ),
                                         const SizedBox(width: 8),
                                         Text(
                                           email,

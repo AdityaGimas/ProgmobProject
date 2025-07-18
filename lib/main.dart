@@ -4,6 +4,7 @@ import 'routes/app_router_delegate.dart';
 import 'routes/page_manager.dart'; 
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const BaliDestinasiApp());
 }
 
